@@ -9,6 +9,7 @@
 #define iconhigh 4000
 
 
+
 unsigned int undericon[iconhigh][iconwide] = { 0 };
 char picture[1000][5000] = { 0 };
 
@@ -163,6 +164,11 @@ void /*函数绘制*/icon() {
 
 void /*游戏编辑器*/myedit()
 {
+#define N 100
+	FILE *fp;
+	char str[N + 1];
+	int er = 0;
+	//判断文件是否打开失败
 	HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
 	CONSOLE_CURSOR_INFO cursor;
 	cursor.bVisible = FALSE;
@@ -178,8 +184,10 @@ void /*游戏编辑器*/myedit()
 	char picmeun = 0, k = 0;
 	float xstep = 0, ystep = 0;
 	POINT pt;//鼠标坐标储存的结构体
+	mousehide();
 	while (1)
 	{
+		coord.X = 0;  coord.Y = 0;
 		SetConsoleCursorPosition(hOutput, coord);
 		for (b = 0;b < 60;b++)
 			for (a = 0;a < 100;a++)
@@ -221,6 +229,13 @@ void /*游戏编辑器*/myedit()
 							if (py[0] > py[a])
 							{
 								dely = py[0] - py[a];
+								int a1, b1;
+								switch (a) 
+								{
+								case 1: a1 = 2;b1 = 3;break;
+								case 2: a1 = 1;b1 = 3;break;
+								case 3: a1 = 1;b1 = 2;break;
+								}
 							}
 							else
 							{
@@ -287,10 +302,16 @@ void /*游戏编辑器*/myedit()
 			printf("当前工具");
 			switch (t)
 			{
-			case 0:  printf("  画笔\n");break;
-			case 1:  printf("  橡皮\n");break;
+			case 0:  printf("  画笔     \n");break;
+			case 1:  printf("  橡皮     \n");break;
+			case 2:  printf("  直线工具 \n");break;
 
 			}
+
+
+			coord.X = 98;  coord.Y = 0;
+			SetConsoleCursorPosition(hOutput, coord);
+			printf(" 按W打开画笔 按E打开橡皮 按L打开直线工具 按R重置画面\n");
 			x = pt.x / xstep - 1;
 			y = pt.y / ystep - 3;
 			if (x > 100)x = 100;
@@ -298,12 +319,29 @@ void /*游戏编辑器*/myedit()
 			if (x < 1)x = 1;
 			if (y < 1)y = 1;
 			photo[y][x] = 35;
-
+			char mousetouch = 0;
 			if (GetKeyState(2) < 0) {
 				i = 2;
+				//临时存放区
+				mousetouch = 1;
+				int xl, yl;
 				switch (t) {
 				case 0:picture[y][x] = 42;break;
 				case 1:picture[y][x] = 0;break;
+				case 2:
+					if (mousetouch < 2) 
+				    { 
+						mousetouch = 2;yl = y;xl = x; 
+						if (xl > x) { (yl - y) / (xl - x); }
+						else { x - xl; }
+					}break;
+				}
+			}
+			else
+			{ 
+				if (mousetouch > 0) 
+				{
+					if (mousetouch > 1) {}mousetouch = 0;
 				}
 			}
 			if (GetKeyState(87) < 0) {
@@ -311,6 +349,9 @@ void /*游戏编辑器*/myedit()
 			}//w
 			if (GetKeyState(69) < 0) {
 				t = 1;
+			}//e
+			if (GetKeyState(76) < 0) {
+				t = 2;
 			}//e
 			if (GetKeyState(82) < 0) {
 				t = 0;picmeun = 1;
@@ -328,10 +369,11 @@ void /*游戏编辑器*/myedit()
 		}
 
 
-
+		coord.X = 0;  coord.Y = 1;
+		SetConsoleCursorPosition(hOutput, coord);
 		for (b = 0;b < 40;b++)
 		{
-			printf("|%s|\n", photo[b]);
+			printf("|%s| \n", photo[b]);
 		}
 		for (b = 0;b < 60;b++)
 			for (a = 0;a < 100;a++)photo[b][a] = ' ';
@@ -343,11 +385,62 @@ void /*游戏编辑器*/myedit()
 
 		GetCursorPos(&pt);
 		printf("  %ld   \n   %ld   \n", pt.x, pt.y);
+
+
+		if (0) { again:system("cls"); }
+
+
+
 		if (picmeun == 3)
 		{
+
+			
+
+
+
 			SetConsoleCursorPosition(hOutput, coord);
 			i = 0;
-
+			if (fopen_s(&fp, "try.txt", "r+")) {
+				puts("已经新建模型存放文件");
+				fopen_s(&fp, "try.txt", "w+");
+			}
+			for (b = 0;b < 40;b++)
+				for (a = 0;a < 100;a++)
+				{
+					if (picture[b][a] == 42)	
+					{
+						i++;
+						xc = a - startx;
+						yc = b - starty;
+						if (yc >= 0)
+							fprintf(fp,"dx[0][y2+%d]", yc);
+						else
+							fprintf(fp,"dx[0][y2%d]", yc);
+						if (xc >= 0)
+							fprintf(fp,"[x2+%d]", xc);
+						else
+							fprintf(fp,"[x2%d]", xc);
+						fprintf(fp,"=id;");
+						if (i == 9) { fprintf(fp,"\n"); i = 0; }
+					}
+				}
+			fclose(fp);
+			printf("\n按m输出镜像代码");
+			while (1) {
+				if (GetKeyState(77) < 0)
+				{
+					system("cls");
+					break;
+					Sleep(500);
+				}//space
+			}
+			SetConsoleCursorPosition(hOutput, coord);
+			i = 0;
+			
+			if (fopen_s(&fp, "try(mirror).txt", "r+")) {
+				puts("已经新建模型存放文件");
+				fopen_s(&fp, "try(mirror).txt", "w+");
+			}
 			for (b = 0;b < 40;b++)
 				for (a = 0;a < 100;a++)
 				{
@@ -357,22 +450,24 @@ void /*游戏编辑器*/myedit()
 						xc = a - startx;
 						yc = b - starty;
 						if (yc >= 0)
-							printf("d[y2+%d]", yc);
+							fprintf(fp,"dx[0][y2+%d]", yc);
 						else
-							printf("d[y2%d]", yc);
+							fprintf(fp, "dx[0][y2%d]", yc);
 						if (xc >= 0)
-							printf("[x2+%d]", xc);
+							fprintf(fp, "[x2-%d]", xc);
 						else
-							printf("[x2%d]", xc);
-						printf("=id;");
-						if (i == 9) { printf("\n"); i = 0; }
+							fprintf(fp, "[x2+%d]", -xc);
+						fprintf(fp, "=id;");
+						if (i == 9) { fprintf(fp, "\n"); i = 0; }
 					}
 				}
-			printf("\n按空格输出镜像代码");
+			fclose(fp);
 			while (1) {
 				if (GetKeyState(32) < 0)
 				{
+					system("cls");
 					break;
+					Sleep(500);
 
 				}//space
 			}
@@ -387,10 +482,63 @@ void /*游戏编辑器*/myedit()
 						i++;
 						xc = a - startx;
 						yc = b - starty;
+						printf("if(");
 						if (yc >= 0)
-							printf("d[y2+%d]", yc);
+							printf("dx[1][y2+%d]", yc);
 						else
-							printf("d[y2%d]", yc);
+							printf("dx[1][y2%d]", yc);
+						if (xc >= 0)
+							printf("[x2+%d]", xc);
+						else
+							printf("[x2%d]", xc);
+						printf("==0)");
+						if (yc >= 0)
+							printf("dx[1][y2+%d]", yc);
+						else
+							printf("dx[1][y2%d]", yc);
+						if (xc >= 0)
+							printf("[x2+%d]", xc);
+						else
+							printf("[x2%d]", xc);
+						printf("=id;");
+						if (i == 9) { printf("\n"); i = 0; }
+					}
+				}
+			printf("\n按m输出镜像代码");
+			while (1) {
+				if (GetKeyState(77) < 0)
+				{
+					system("cls");
+					break;
+					Sleep(500);
+
+				}//space
+			}
+			SetConsoleCursorPosition(hOutput, coord);
+			i = 0;
+
+			for (b = 0;b < 40;b++)
+				for (a = 0;a < 100;a++)
+				{
+					if (picture[b][a] == 42)
+					{
+						i++;
+						xc = a - startx;
+						yc = b - starty;
+						printf("if(");
+						if (yc >= 0)
+							printf("dx[1][y2+%d]", yc);
+						else
+							printf("dx[1][y2%d]", yc);
+						if (xc >= 0)
+							printf("[x2-%d]", xc);
+						else
+							printf("[x2+%d]", -xc);
+						printf("==0)");
+						if (yc >= 0)
+							printf("dx[1][y2+%d]", yc);
+						else
+							printf("dx[1][y2%d]", yc);
 						if (xc >= 0)
 							printf("[x2-%d]", xc);
 						else
@@ -399,8 +547,12 @@ void /*游戏编辑器*/myedit()
 						if (i == 9) { printf("\n"); i = 0; }
 					}
 				}
+			
+			
 
-			while (1);
+			while (1)if (GetKeyState(82) < 0) {
+				goto again;
+			}//r
 		}
 	}
 	return 0;
@@ -618,6 +770,7 @@ void /*内置编辑器*/screenedit()
 			while (1) {
 				if (GetKeyState(32) < 0)
 				{
+					system("cls");
 					break;
 
 				}//space
@@ -652,3 +805,66 @@ void /*内置编辑器*/screenedit()
 	return 0;
 }
 
+
+//武器绘制
+/*
+if (picmeun == 3)
+		{
+			SetConsoleCursorPosition(hOutput, coord);
+			i = 0;
+
+			for (b = 0;b < 40;b++)
+				for (a = 0;a < 100;a++)
+				{
+					if (picture[b][a] == 42)
+					{
+						i++;
+						xc = a - startx;
+						yc = b - starty;
+						if (yc >= 0)
+							printf("d[y2+%d]", yc);
+						else
+							printf("d[y2%d]", yc);
+						if (xc >= 0)
+							printf("[x2+%d]", xc);
+						else
+							printf("[x2%d]", xc);
+						printf("=id;");
+						if (i == 9) { printf("\n"); i = 0; }
+					}
+				}
+			printf("\n按空格输出镜像代码");
+			while (1) {
+				if (GetKeyState(32) < 0)
+				{
+					break;
+
+				}//space
+			}
+			SetConsoleCursorPosition(hOutput, coord);
+			i = 0;
+
+			for (b = 0;b < 40;b++)
+				for (a = 0;a < 100;a++)
+				{
+					if (picture[b][a] == 42)
+					{
+						i++;
+						xc = a - startx;
+						yc = b - starty;
+						if (yc >= 0)
+							printf("d[y2+%d]", yc);
+						else
+							printf("d[y2%d]", yc);
+						if (xc >= 0)
+							printf("[x2-%d]", xc);
+						else
+							printf("[x2+%d]", -xc);
+						printf("=id;");
+						if (i == 9) { printf("\n"); i = 0; }
+					}
+				}
+
+			while (1);
+		}
+*/
