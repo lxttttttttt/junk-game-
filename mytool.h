@@ -178,15 +178,17 @@ void /*游戏编辑器*/myedit()
 	HANDLE hOutput;
 	COORD coord = { 0,0 };
 	hOutput = GetStdHandle(STD_OUTPUT_HANDLE);
-
+	char mousetouch = 0;
 	char  photo[60][120] = { 0 };
 	int i = 0, a, b, px[4] = { 0 }, py[4] = { 0 }, delx = 0, dely = 0, x, y, startx, starty, t = 0, xc, yc;
 	char picmeun = 0, k = 0;
 	float xstep = 0, ystep = 0;
+	int x4 = 0, y4 = 0;
 	POINT pt;//鼠标坐标储存的结构体
 	mousehide();
 	while (1)
 	{
+	
 		coord.X = 0;  coord.Y = 0;
 		SetConsoleCursorPosition(hOutput, coord);
 		for (b = 0;b < 60;b++)
@@ -296,7 +298,7 @@ void /*游戏编辑器*/myedit()
 
 		}
 		if (picmeun == 2)
-		{
+		{backacce:
 
 			printf("\t\t\t\t\t\t已确认初始位点            ");
 			printf("当前工具");
@@ -305,13 +307,14 @@ void /*游戏编辑器*/myedit()
 			case 0:  printf("  画笔     \n");break;
 			case 1:  printf("  橡皮     \n");break;
 			case 2:  printf("  直线工具 \n");break;
+			case 3:  printf("  镜像工具 \n");break;
 
 			}
 
 
 			coord.X = 98;  coord.Y = 0;
 			SetConsoleCursorPosition(hOutput, coord);
-			printf(" 按W打开画笔 按E打开橡皮 按L打开直线工具 按R重置画面\n");
+			printf(" 按W打开画笔 按E打开橡皮 按L打开直线工具 按R重置画面 按m打开镜像工具 按d输出模型\n");
 			x = pt.x / xstep - 1;
 			y = pt.y / ystep - 3;
 			if (x > 100)x = 100;
@@ -319,22 +322,70 @@ void /*游戏编辑器*/myedit()
 			if (x < 1)x = 1;
 			if (y < 1)y = 1;
 			photo[y][x] = 35;
-			char mousetouch = 0;
+			
 			if (GetKeyState(2) < 0) {
 				i = 2;
 				//临时存放区
-				mousetouch = 1;
-				int xl, yl;
+				//mousetouch = 1;
+				
 				switch (t) {
 				case 0:picture[y][x] = 42;break;
 				case 1:picture[y][x] = 0;break;
 				case 2:
 					if (mousetouch < 2) 
 				    { 
-						mousetouch = 2;yl = y;xl = x; 
-						if (xl > x) { (yl - y) / (xl - x); }
-						else { x - xl; }
-					}break;
+						mousetouch = 2;
+						y4 = y;x4 = x; 
+						
+					}
+					if (x4 > x) 
+					{ 
+						if ((float)(y4 - y) / (x4 - x) < 0.5 && (float)(y4 - y) / (x4 - x) > -0.5) 
+						{
+							for (int x2 = x;x2 < x4;x2++)
+							{
+
+								photo[(int)((float)(y4 - y) / (x4 - x)*(x2 - x4) + y4)][x2] = 35;
+
+							}
+						}
+						else 
+						{
+							if (y4 > y) //纵坐标是反过来的
+							{
+								for (int y2 = y;y2 < y4;y2++)
+
+								{
+
+									photo[y2][(int)((float)(x - x4) / (y4 - y)*(y4 - y2) + x4)] = 35;
+
+								}
+							}
+							else 
+							{
+								for (int y2 = y;y2 > y4;y2--)
+
+								{
+
+									photo[y2][(int)((float)(x4 - x) / (y - y4)*(y4 - y2) + x4)] = 35;
+
+								}
+							}
+					
+						}
+					}
+					else 
+					{
+						for (int x2 = x;x2 > x4;x2--)
+						{
+							photo[(int)((float)(y4 - y) / (x - x4)*(x4 - x2) + y4)][x2] = 35;
+						}
+					}
+					
+					
+					
+					
+					break;
 				}
 			}
 			else
@@ -353,6 +404,10 @@ void /*游戏编辑器*/myedit()
 			if (GetKeyState(76) < 0) {
 				t = 2;
 			}//e
+			if (GetKeyState(77) < 0) {
+				t = 3;
+			}
+
 			if (GetKeyState(82) < 0) {
 				t = 0;picmeun = 1;
 				for (b = 0;b < 60;b++)
@@ -393,6 +448,19 @@ void /*游戏编辑器*/myedit()
 
 		if (picmeun == 3)
 		{
+			char word[100] = {0};
+			printf("请输入文件名");
+			scanf_s("%s", word);
+			int mount = 0;
+
+			while (word[mount] != '\0')
+			{
+				mount++;
+			}
+			word[mount] = '.';
+			word[mount + 1] = 't';
+			word[mount + 2] = 'x';
+			word[mount + 3] = 't';
 
 			
 
@@ -400,9 +468,9 @@ void /*游戏编辑器*/myedit()
 
 			SetConsoleCursorPosition(hOutput, coord);
 			i = 0;
-			if (fopen_s(&fp, "try.txt", "r+")) {
+			if (fopen_s(&fp, word, "r+")) {
 				puts("已经新建模型存放文件");
-				fopen_s(&fp, "try.txt", "w+");
+				fopen_s(&fp, word, "w+");
 			}
 			for (b = 0;b < 40;b++)
 				for (a = 0;a < 100;a++)
@@ -425,8 +493,9 @@ void /*游戏编辑器*/myedit()
 					}
 				}
 			fclose(fp);
-			printf("\n按m输出镜像代码");
+			printf("已建立模型存放文件%s\n按m输出镜像代码",word);
 			while (1) {
+				if (GetKeyState(90) < 0) { picmeun = 2; goto backacce; }
 				if (GetKeyState(77) < 0)
 				{
 					system("cls");
@@ -436,10 +505,23 @@ void /*游戏编辑器*/myedit()
 			}
 			SetConsoleCursorPosition(hOutput, coord);
 			i = 0;
-			
-			if (fopen_s(&fp, "try(mirror).txt", "r+")) {
+			mount = 0;
+			while (word[mount] != '\0')
+			{
+				mount++;
+			}word[mount] = '(';
+			word[mount + 1] = 'm';
+			word[mount + 2] = 'i';
+			word[mount + 3] = 'r';
+			word[mount + 4] = ')';
+			word[mount + 5] = '.';
+			word[mount + 6] = 't';
+			word[mount + 7] = 'x';
+			word[mount + 8] = 't';
+
+			if (fopen_s(&fp, word, "r+")) {
 				puts("已经新建模型存放文件");
-				fopen_s(&fp, "try(mirror).txt", "w+");
+				fopen_s(&fp, word, "w+");
 			}
 			for (b = 0;b < 40;b++)
 				for (a = 0;a < 100;a++)
@@ -504,8 +586,9 @@ void /*游戏编辑器*/myedit()
 						if (i == 9) { printf("\n"); i = 0; }
 					}
 				}
-			printf("\n按m输出镜像代码");
+			printf("已建立模型存放文件%s\n按m输出镜像代码",word);
 			while (1) {
+				if (GetKeyState(90) < 0) { picmeun = 2;goto backacce; }
 				if (GetKeyState(77) < 0)
 				{
 					system("cls");
