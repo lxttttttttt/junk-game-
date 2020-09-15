@@ -1,3 +1,9 @@
+//2020 9 15更新说明：增加了直线工具，将绘图宽度由100增加到了130，命名文件时有bug，目前暂用enter键取代d键
+//
+//
+//
+//
+//
 #pragma once
 #include<stdio.h> 
 #include<stdlib.h>
