@@ -1,0 +1,3581 @@
+#pragma once
+
+#include<stdio.h> 
+#include<stdlib.h>
+#include <windows.h>
+#include <conio.h>
+#include<time.h>
+#include<string.h>
+#include <math.h>
+#include <direct.h>
+#include"mytool.h"
+#include"monster and model.h"
+
+
+#define 关卡设计 roomdesign()
+#define 切图后重置 reroom()
+#define 人物操作 movebutton
+#define 开场动画 startgame()
+#define 开发者调试 if (creater > 0)
+#define  空 0
+#define  非触发程序 if(0)
+#define  一直循环 while(1)
+#define  存在 1
+#define  玩家 1
+#define  已探索 1
+#define  台 2
+#define  墙 3
+#define  箱 4
+#define  右门 5
+#define  左门 6
+#define  前门 7
+#define  后门 8
+#define  电脑 10
+
+#define  水 14
+#define  背景 15
+#define  遮挡 16
+
+#define 大于9000的id  是村民
+#define  怪物总数 10000
+#define  房间数量 10000
+#define  空格键按下 if (GetKeyState(32) < 0) 
+#define  ESC键按下 if (GetKeyState(27) < 0) 
+#define  回车键按下 if (GetKeyState(13) < 0)
+#define  数字0键按下 if (GetKeyState(48) < 0)
+#define  数字1键按下 if (GetKeyState(49) < 0) 
+#define  数字2键按下 if (GetKeyState(50) < 0) 
+#define  数字3键按下 if (GetKeyState(51) < 0) 
+#define  数字4键按下 if (GetKeyState(52) < 0)
+#define  数字5键按下 if (GetKeyState(53) < 0) 
+#define  数字6键按下 if (GetKeyState(54) < 0) 
+#define  数字7键按下 if (GetKeyState(55) < 0) 
+#define  数字8键按下 if (GetKeyState(56) < 0)
+#define  数字9键按下 if (GetKeyState(57) < 0) 
+#define  视角归位   cgy=y+15;cgx=x;
+#define  A键按下 if (GetKeyState(65) < 0) 
+#define  D键按下 if (GetKeyState(68) < 0) 
+#define  W键按下 if (GetKeyState(87) < 0) 
+#define  S键按下 if (GetKeyState(83) < 0) 
+#define  J键按下 if (GetKeyState(74) < 0) 
+#define  K键按下 if (GetKeyState(75) < 0) 
+#define  延迟    Sleep
+#define  paperx    84
+#define 显示屏幕参数 (char*)&showb,200
+#define 绘画底板参数 (char*)&picture,5000
+#define 逻辑层参数   &dx[1],5000   
+
+static float hpi = 3.1415926 / 180;
+char picmeun = 0, kdraw = 0,editmode=0;
+POINT ptd; // 鼠标坐标储存的结构体
+float xstep = 0, ystep = 0;
+int  t = 0;
+
+//***************
+//*声明的全局变量
+//***************
+
+//显示屏坐标 
+
+//struct string
+//{
+//	/*x2					初始化横坐标													y2					初始化纵坐标
+//		h1					初始化生命														id					怪物逻辑编号
+//		r					怪物寻敌半径													e					是否为逻辑 / 对话
+//		die[id]				怪物死亡不在运行标志											i[id]				怪物的实际生命值 + 1
+//		x1					怪物横坐标														y1					怪物纵坐标
+//		xm[id]				怪物实际横坐标											    	ym[id]				怪物实际纵坐标
+//		Vy2					怪物当前速度（整型）											max					最大速度
+//		yfork				武器横坐标														xfork				武器纵坐标
+//		nice[id]				怪物善恶值													    ato[id]				怪物当前状态为巡逻 / 发现敌人
+//		fag[0]				是前往目标的标志												fag[1]				是第一个目标坐标
+//		fag[2]				是第二个目标坐标												fag[3]				是怪物是否落地
+//		aY[id]				怪物纵向加速度													axmonst[id]			怪物横向加速度
+//		actmonst[id]			怪物当前动作模型                                                d[][] = id            怪物在游戏中逻辑层的模型
+//		vY[id]               怪物当前纵向速度(浮点数)										Vy2[id]				怪物当前纵向速度（整型）
+//		hurteen[id]          怪物受伤标志                                                    dieword[id]         当怪物战斗中途触发的对话
+//		axmonst[id]          怪物横向加速度                                                  conmonst[id]        怪物左右朝向
+//		V1monst[id]          怪物横向速度（浮点数）                                          V2monst[id]         怪物横向速度整型数
+//		meun                 怪物对话深度（层次）                                            acttime[id]         当前动作持续的帧数（时间）*/
+//	char con, die, nice, ato, dieword;
+//	int xm, i, ym, act, hurteen, acttime, meun, Vy2, yfork, xfork, V2;
+//	float axmonst, aY, vY, V1;
+//
+//}mon[怪物总数];
+char show[100][200] = { 0 }, showb[100][200] = { 2 };
+
+char showt[100][100] = { ' ' }, showtmir[35][32] = { ' ' };//显示屏函数
+
+char*monmodel[怪物总数];
+int mondelfor[怪物总数][2];
+
+
+short int
+desert,
+eit,
+xbotton,
+ybotton,
+xauto,
+ydauto,
+xboxz,
+yboxz,
+eid
+;
+
+char
+
+photodandy,
+firepot,
+ato[怪物总数] = { 空 },
+die[怪物总数] = { 空 },
+dhurt[怪物总数] = { 空 },
+boxid[50] = { 空 },
+tac[19][39] = { 15 },//拓麻歌子
+dieword = 0,
+box[怪物总数] = { 空 },
+keyhit[100] = { 空 },
+shopper,
+choose1[10] = { 0 },//抽卡
+choose2[10] = { 0 },
+age,
+key,
+board,
+handcard1,
+handcard2,
+hand1[10],
+hand2[10],
+key1,
+jj1,
+creater,
+hurteen[怪物总数]//受到伤害时效果 
+, meun
+, trad
+, hdso
+, vill
+, talk
+, *deliver
+;
+ int  ob[100][3] = { 空 };//物品文本以及数量
+
+ int
+	 act1 = 0,//动作
+	 act3 = 0,//动作的时间标志
+x,
+y,
+cgsave,
+cg,
+cgx,
+cgy,
+*pt,
+tacx = 11,
+tacy = 15,
+xb[50] = { 空 },
+yb[50] = { 空 },
+cgend[10000],
+xc1,
+yc1,
+xcar,
+ycar,
+r[怪物总数] = { 空 },
+room = 0,
+comp = 0,
+i[怪物总数] = { 空 },
+xm[怪物总数] = { 空 },
+ym[怪物总数] = { 空 },
+ai[怪物总数] = { 空 },
+xbox[50] = { 空 },
+ybox[50] = { 空 },
+fag[40][4] = { 空 },
+mop[怪物总数] = { 空 },
+bladehurt,
+
+st[500][500] = { 空 },
+acttime[100] = { 空 }
+, talktime,
+missx,
+missy,
+missid,
+cgrah
+;
+
+float
+ab[20] = { 空 },
+vb[20] = { 空 },
+vxb[20] = { 空 },
+ax[怪物总数] = {空},
+aY[怪物总数],
+vY[怪物总数],
+axmonst[怪物总数] = { 空 },
+V1monst[怪物总数] = { 空 },
+ayfly[怪物总数] = { 空 },
+Vy1monst[怪物总数] = { 空 };
+int
+V2monst[怪物总数] = { 空 },
+Vy2monst[怪物总数] = { 空 },
+heart1 = 10, heart2 = 15,
+max[怪物总数] = {5}, con, m1, nice[怪物总数] = { 空 },
+ni[怪物总数],
+xoc,
+yoc,
+conmonst[怪物总数] = { 空 },
+actmonst[怪物总数] = { 空 },
+cooldown[怪物总数] = { 空 }
+, visual[50][50] = { 0 }
+;
+int
+flagx[10] = { 0 },
+flagy[10] = { 0 },
+fstep[10] = { 0 },
+visualstep[50][50] = { 0 },
+
+a,
+b,
+c = 0,
+e,
+f[怪物总数], /*f=1为落地0为空中*/
+memory[20] = { 0 },
+dx[5][1000][5000] = { 空 },
+hearp = 0,
+ep,
+en = 0,
+tme = 0,
+numbvill,
+time0,
+time1,
+sart,
+sop;
+
+ char *p, h, u
+, xtrd,
+ytrd;//monst[怪物种类][怪物数量]
+ char trd;//可对话角色在每关出现的标志
+char  mison;//任务出现时对话标志
+
+ char f1, f2;//地板
+char down, o2, o3;//comp是地图比较
+float L1, R1, V1, Vy1;
+int	L2, R2, V2, Vy2;
+char ch1, ch2, ch3 /*任务标识符号*/;
+char n1[10] = "老子";
+int   m2, m3, m4, sit, elc, table;/*游戏杂项属性*/
+char i1 = 1, i2 = 0, i3, i4, i5, tip = 0, mps[100], hurttoon;
+int mood[100][100], talkmood[10000], screenx, screeny, monst[100][100] = { 0 }, xmonst[怪物总数] = { 0 }, ymonst[怪物总数] = { 0 };
+short visualx[50][50] = { 0 }, visualy[50][50];
+ int  j2 = 0, j3[100] = { 0 }, j4, j5, tt1, tt2;//任务
+int act2;//人物动作模组
+ char day[10], night[10], open[房间数量] = { 0 };
+ char tian = 'b', cartoon/*过场动画标志*/, latern = 0/*白天还是黑夜*/, shootgun;
+ int k = 0, youhua;/*刷新数*/
+
+
+
+
+
+ 
+
+
+
+
+//unsigned char stxt[1][60] = "攻击卡：对敌人造成5点伤害";
+
+
+
+
+
+
+
+void HideCursor()
+{  //定义隐藏光标函数
+	HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
+	CONSOLE_CURSOR_INFO cursor;
+	cursor.bVisible = FALSE;
+	cursor.dwSize = sizeof(cursor);
+	SetConsoleCursorInfo(handle, &cursor);
+}
+
+void mondt(int kind, int amount, int id, int ix, int iy) //怪物种族 本关卡第几个 怪物id 位置x,y 
+{
+	monst[kind][amount] = id;
+	xmonst[id] = ix;
+	ymonst[id] = iy;
+
+}
+
+void eexit(int doorl, int doorr, int doorf, int doorb)
+{
+	if (room > comp) {
+
+		if (room - comp < 50)
+		{
+			if (doorl == 0) { x = 12 + 60; }
+			else
+				x = doorl + 60 + 5;
+		}
+
+		if (room - comp == 50)
+		{
+			if (doorb == 0) { y = 600 - 24; }
+			else
+				y = doorb - 8;
+		}//46-22=24
+	}//所有位置都是实际位置移60
+	if (room < comp) {
+
+		if (comp - room < 50)
+		{
+			if (doorr == 0) { x = 147 + 60; }
+			else
+				x = doorr + 60 - 5;
+		}
+
+		if (comp - room == 50)
+		{
+			if (doorf == 0) { y = 600 - 9; }
+			else
+				y = doorf - 8;
+		}//46-37=9
+	}
+}
+
+void startgame() {
+	int a, b;
+
+
+
+
+	/*HANDLE con = GetStdHandle(STD_OUTPUT_HANDLE);
+	COORD buf = { 130,63 };
+
+
+	SetConsoleScreenBufferSize(con, buf);
+	system("mode con cols=120 lines=60");*/
+	延迟(10);
+	HANDLE hOutput;
+	COORD coord = { 0,0 };
+	hOutput = GetStdHandle(STD_OUTPUT_HANDLE);
+
+
+	HideCursor();//定义隐藏光标函数
+	day[0] = ' ';day[1] = '*';
+	night[0] = ' ';night[1] = '+';
+	ch1 = night[0];
+	ch2 = night[1];
+
+
+	for (a = 0;a < 5;a++) {
+		coord.X = 53;
+		coord.Y = 0;
+		SetConsoleCursorPosition(hOutput, coord);
+		printf("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+		coord.X = 53;
+		coord.Y = 9;
+		SetConsoleCursorPosition(hOutput, coord);
+		printf("----------------------+-----------------------------------+---------------------\n");
+		coord.X = 53;
+		coord.Y = 50;
+		SetConsoleCursorPosition(hOutput, coord);
+		printf("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+		for (a = 10;a < 50;a++)
+		{
+			coord.Y = a;
+			coord.X = 75;
+			SetConsoleCursorPosition(hOutput, coord);
+			printf("!");
+			coord.Y = a;
+			coord.X = 111;
+			SetConsoleCursorPosition(hOutput, coord);
+			printf("!");
+
+		}
+		for (a = 0;a < 50;a++)
+		{
+			coord.Y = a;
+			coord.X = 53;
+			SetConsoleCursorPosition(hOutput, coord);
+			if (a == 18 || a == 32)
+				printf("@");
+			else printf("+");
+			coord.Y = a;
+			coord.X = 133;
+			SetConsoleCursorPosition(hOutput, coord);
+			printf("+");
+		}
+		coord.X = paperx;
+		coord.Y = 2;
+		SetConsoleCursorPosition(hOutput, coord);
+		printf("&&&&&&&&&&&&&&&&&&\n");
+		延迟(75);
+		coord.X = paperx;
+		coord.Y = 3;
+		SetConsoleCursorPosition(hOutput, coord);
+		printf("&&&&&&&&&&&&&&&&&&\n");
+		延迟(75);
+		coord.X = paperx;
+		coord.Y = 4;
+		SetConsoleCursorPosition(hOutput, coord);
+		printf("&&&&&&&&&&&&&&&&&&\n");延迟(75);
+		coord.X = paperx;
+		coord.Y = 5;
+		SetConsoleCursorPosition(hOutput, coord);
+		printf("&&&&&&&&&&&&&&&&&&\n");延迟(75);
+		coord.X = paperx;
+		coord.Y = 6;
+		SetConsoleCursorPosition(hOutput, coord);
+		printf("&&&&&&&&&&&&&&&&&&\n");延迟(75);
+		system("cls");
+
+	}
+
+
+
+	coord.X = 53;
+	coord.Y = 0;
+	SetConsoleCursorPosition(hOutput, coord);
+	printf("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+	coord.X = 53;
+	coord.Y = 9;
+	SetConsoleCursorPosition(hOutput, coord);
+	printf("----------------------+-----------------------------------+---------------------\n");
+	coord.X = 53;
+	coord.Y = 50;
+	SetConsoleCursorPosition(hOutput, coord);
+	printf("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+	for (a = 10;a < 50;a++)
+	{
+		coord.Y = a;
+		coord.X = 75;
+		SetConsoleCursorPosition(hOutput, coord);
+		printf("!");
+		coord.Y = a;
+		coord.X = 111;
+		SetConsoleCursorPosition(hOutput, coord);
+		printf("!");
+
+	}
+	for (a = 0;a < 50;a++)
+	{
+		coord.Y = a;
+		coord.X = 53;
+		SetConsoleCursorPosition(hOutput, coord);
+		if (a == 18 || a == 32)
+			printf("@");
+		else printf("+");
+		coord.Y = a;
+		coord.X = 133;
+		SetConsoleCursorPosition(hOutput, coord);
+		printf("+");
+	}
+
+
+
+	coord.X = 118;
+	coord.Y = 2;
+	SetConsoleCursorPosition(hOutput, coord);
+	printf("绝密*开封前");
+
+	/*printf("								⣿⣿⣿⣿⣿⣿⣿⣿⣿⠻⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿\n");
+	printf("						    	⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⠀⠹⢿⣿⣿⣿⣿⣿⡿⠋⣿⣿⣿⣿\n");
+	printf("								⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⠀⠀⠈⠻⣿⣿⡿⠏⠀⠀⣿⣿⣿⣿\n");
+	printf("								⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⠀⠀⠀⠀⠙⠋⠀⠀⠀⢀⣿⣿⣿⣿\n");
+	printf("								⣿⣿⣷⡈⠉⠉⠉⠉⠉⠀⣀⡤⠴⠶⠶⠶⠤⣄⡀⠸⠿⠿⠛⢛\n");
+	printf("								⣿⣿⣿⣿⡄⠀⠀⠀⣰⠚⠁⠀⠀⠀⠀⠀⠀⠀⠳⣄⠀⠀⢠⣾\n");
+	printf("								⣿⣿⣿⣿⣷⠀⠀⡜⠁⠀⠀⠀⠀⣀⣀⣀⣀⣀⣀⠘⡆⢠⣿⣿\n");
+	printf("								⣿⣿⠿⠛⠉⠀⢰⠇⠀⠰⣾⡯⠭⠭⣭⠭⡭⠭⠭⠭⢿⡀⠙⠿\n");
+	printf("								⣿⣤⣀⠀⠀⠀⢸⠀⢠⣧⣤⣤⣤⠤⢼⣾⠥⣤⡤⠤⠬⡇⣠⣴\n");
+	printf("								⣿⣿⣿⣿⡦⠀⢸⠀⠈⢧⡀⠁⠀⠀⡠⠛⣄⠈⠀⢀⣠⠇⣿⣿\n");
+	printf("								⣿⣿⠿⠋⠀⠀⣸⡄⠀⢤⣉⠓⠚⠋⠁⡀⢸⡩⣯⡭⢿⡀⠙⠿\n");
+	printf("								⣿⣷⣤⣄⡀⢼⠋⠀⠀⠀⠉⠉⠁⠀⠀⠳⣼⠇⠀⠀⣼⢹⣾⣿\n");
+	printf("								⣿⣿⣿⣿⡟⠈⠳⣤⠀⠀⡀⠀⠀⣀⣀⣀⣀⣀⡀⠀⣿⡻⣿⣿\n");
+	printf("								⣿⣿⣿⣿⣾⣿⣿⠞⣆⠸⡇⠚⠉⠁⠀⣿⣿⡟⠉⢁⣿⣿⣿⣿\n");
+	printf("								⣿⣿⣿⣿⣿⣿⣿⣶⣿⣆⠈⠁⠀⠰⡖⠙⠛⠃⣠⣿⣿⣿⣿⣿\n");
+	printf("								⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡦⣄⣀⣀⣠⣴⣾⣿⣿⣿⣿⣿⣿\n");
+	printf("								⣿⣿⣿⣿⣿⣿⡿⠿⠟⠛⡛⢷⣤⣀⣠⢾⣛⠛⠿⢿⣿⣿⣿⣿\n");
+	printf("								⣿⣿⣿⣿⣿⠃⠀⠀⠀⢰⠃⢸⠀⠀⠀⠘⡟⣆⠀⠀⢹⣿⣿⣿\n");
+	*/
+
+
+
+
+
+
+
+
+
+
+	for (a = 0;a < 8;a++) {
+		coord.X = 53;
+		coord.Y = 0;
+		SetConsoleCursorPosition(hOutput, coord);
+		printf("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+		coord.X = 53;
+		coord.Y = 9;
+		SetConsoleCursorPosition(hOutput, coord);
+		printf("----------------------+-----------------------------------+---------------------\n");
+		coord.X = 53;
+		coord.Y = 50;
+		SetConsoleCursorPosition(hOutput, coord);
+		printf("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+		for (a = 10;a < 50;a++)
+		{
+			coord.Y = a;
+			coord.X = 75;
+			SetConsoleCursorPosition(hOutput, coord);
+			printf("!");
+			coord.Y = a;
+			coord.X = 111;
+			SetConsoleCursorPosition(hOutput, coord);
+			printf("!");
+
+		}
+		for (a = 0;a < 50;a++)
+		{
+			coord.Y = a;
+			coord.X = 53;
+			SetConsoleCursorPosition(hOutput, coord);
+			if (a == 18 || a == 32)
+				printf("@");
+			else printf("+");
+			coord.Y = a;
+			coord.X = 133;
+			SetConsoleCursorPosition(hOutput, coord);
+			printf("+");
+		}
+		coord.X = paperx;
+		coord.Y = 2;
+		SetConsoleCursorPosition(hOutput, coord);
+		printf(".__/\\       /\\ __   \n");
+		延迟(175);
+		coord.X = paperx;
+		coord.Y = 3;
+		SetConsoleCursorPosition(hOutput, coord);
+		printf("|  )/___  __)//  |_  \n");
+		延迟(175);
+		coord.X = paperx;
+		coord.Y = 4;
+		SetConsoleCursorPosition(hOutput, coord);
+		printf("|  | \\  \\/  /\\   __\\  \n");延迟(175);
+		coord.X = paperx;
+		coord.Y = 5;
+		SetConsoleCursorPosition(hOutput, coord);
+		printf("|  |__>    <  |  |  \n");延迟(175);
+		coord.X = paperx;
+		coord.Y = 6;
+		SetConsoleCursorPosition(hOutput, coord);
+		printf("|____/__/\\__\\ |__|  \n");延迟(175);
+
+		coord.X = 55;
+		coord.Y = 12;
+		SetConsoleCursorPosition(hOutput, coord);
+
+		printf("\tXXXXXXXXXXXXXXXXXXXXXXXXX XXXXXXX\n");
+		延迟(100);
+		coord.X = 55;
+		coord.Y = 15;
+		SetConsoleCursorPosition(hOutput, coord);
+		printf("\tXXXXXXXXXXXXXXXXXXXXXXXXX XXXXXXX");
+		延迟(100);
+		coord.X = 55;
+		coord.Y = 18;
+		SetConsoleCursorPosition(hOutput, coord);
+		printf("\tXXXXXXXXXXXXXXXXXXXXXXXXX XXXXXXX\n");
+		延迟(100);
+		coord.X = 55;
+		coord.Y = 21;
+		SetConsoleCursorPosition(hOutput, coord);
+		printf("\tXXXXXXXXXXXXXXXXXXXXXXXXX XXXXXXX");
+		延迟(100);
+		coord.X = 55;
+		coord.Y = 24;
+		SetConsoleCursorPosition(hOutput, coord);
+
+		printf("\tXXXXXXXXXXXXXXXXXXXXXXXXX XXXXXXX\n");
+		延迟(100);
+		coord.X = 55;
+		coord.Y = 27;
+		SetConsoleCursorPosition(hOutput, coord);
+		printf("\tXXXXXXXXXXXXXXXXXXXXXXXXX XXXXXXX");
+		延迟(100);
+		coord.X = 55;
+		coord.Y = 30;
+		SetConsoleCursorPosition(hOutput, coord);
+		printf("\tXXXXXXXXXXXXXXXXXXXXXXXXX XXXXXXX\n");
+		延迟(100);
+		coord.X = 55;
+		coord.Y = 33;
+		SetConsoleCursorPosition(hOutput, coord);
+		printf("\tXXXXXXXXXXXXXXXXXXXXXXXXX XXXXXXX");
+		延迟(100);
+		system("cls");
+	}
+
+
+
+
+	coord.X = 53;
+	coord.Y = 0;
+	SetConsoleCursorPosition(hOutput, coord);
+	printf("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+	coord.X = 53;
+	coord.Y = 9;
+	SetConsoleCursorPosition(hOutput, coord);
+	printf("----------------------+-----------------------------------+---------------------\n");
+	coord.X = 53;
+	coord.Y = 50;
+	SetConsoleCursorPosition(hOutput, coord);
+	printf("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+	for (a = 10;a < 50;a++)
+	{
+		coord.Y = a;
+		coord.X = 75;
+		SetConsoleCursorPosition(hOutput, coord);
+		printf("!");
+		coord.Y = a;
+		coord.X = 111;
+		SetConsoleCursorPosition(hOutput, coord);
+		printf("!");
+
+	}
+	for (a = 0;a < 50;a++)
+	{
+		coord.Y = a;
+		coord.X = 53;
+		SetConsoleCursorPosition(hOutput, coord);
+		if (a == 18 || a == 32)
+			printf("@");
+		else printf("+");
+		coord.Y = a;
+		coord.X = 133;
+		SetConsoleCursorPosition(hOutput, coord);
+		printf("+");
+	}
+	coord.X = paperx;
+	coord.Y = 2;
+	SetConsoleCursorPosition(hOutput, coord);
+	printf(".__/\\       /\\ __   \n");
+
+	coord.X = paperx;
+	coord.Y = 3;
+	SetConsoleCursorPosition(hOutput, coord);
+	printf("|  )/___  __)//  |_  \n");
+
+	coord.X = paperx;
+	coord.Y = 4;
+	SetConsoleCursorPosition(hOutput, coord);
+	printf("|  | \\  \\/  /\\   __\\  \n");
+	coord.X = paperx;
+	coord.Y = 5;
+	SetConsoleCursorPosition(hOutput, coord);
+	printf("|  |__>    <  |  |  \n");
+	coord.X = paperx;
+	coord.Y = 6;
+	SetConsoleCursorPosition(hOutput, coord);
+	printf("|____/__/\\__\\ |__|  \n");
+
+
+
+	coord.X = 55;
+	coord.Y = 12;
+	SetConsoleCursorPosition(hOutput, coord);
+
+	printf("\t正在初始化系统，请稍后\n");
+	延迟(100 * 3);
+	coord.X = 55;
+	coord.Y = 15;
+	SetConsoleCursorPosition(hOutput, coord);
+	printf("\t确保你已经将窗口全屏，将系统分辨率调为1920*1080，关闭中文输入法与大写");
+	延迟(100 * 3);
+	coord.X = 55;
+	coord.Y = 18;
+	SetConsoleCursorPosition(hOutput, coord);
+	printf("\t程序框字体为16号 \n");
+	延迟(100 * 3);
+	coord.X = 55;
+	coord.Y = 21;
+	SetConsoleCursorPosition(hOutput, coord);
+	printf("\t若win7及以下系统无法全屏");
+	延迟(100 * 3);
+	coord.X = 55;
+	coord.Y = 24;
+	SetConsoleCursorPosition(hOutput, coord);
+	printf("\t右键程序边框打开属性在窗口或布局中设宽为240高60然后重启程序");
+	延迟(100 * 3);
+	coord.X = 55;
+	coord.Y = 27;
+	SetConsoleCursorPosition(hOutput, coord);
+	printf("\t进入游戏后如果画面不流畅可以按ESC打开菜单选择设置修改流畅度");
+	延迟(100 * 3);
+	coord.X = 55;
+	coord.Y = 30;
+	SetConsoleCursorPosition(hOutput, coord);
+	printf("\t本游戏由lxt制作");
+	printf("++++++++");
+	延迟(100 * 3);
+	coord.X = 118;
+	coord.Y = 2;
+	SetConsoleCursorPosition(hOutput, coord);
+	printf("绝密*开封前");
+
+	延迟(100 * 3);
+	coord.X = 55;
+	coord.Y = 33;
+	SetConsoleCursorPosition(hOutput, coord);
+	printf("\t初始化成功，请按回车继续\n");
+
+	con = 1;
+	act2 = 0;
+	time0 = 0;
+	time1 = 0;
+	ch1 = ' ';
+	ch3 = 0;
+	table = 0;
+	L2 = 0;
+	for (b = 0;b < 19;b++)for (a = 0;a < 38;a++)tac[b][a] = '$';//拓麻歌子初始化
+	R2 = 0;
+	max[1] = 3;
+
+	for (int a = 1;a < 1000;a++)
+	{
+		max[a] = 3;
+	}
+	V2 = 0;
+	Vy2 = 0;
+	xcar = 0;
+	ycar = 0;
+	key1 = 0;
+	L1 = 0;
+	R1 = 0;
+	V1 = 0;
+	Vy1 = 0;
+	f[1] = 1;
+	down = 0;
+	youhua = 42;
+	ax[1] = 0;
+	sart = 0;
+	sop = 0;
+	aY[1] = 0;
+	x = 80;
+	y = 600 - 14;
+	en = y + 13;
+	cg = 0;
+	sit = 0;
+	firepot = 0;
+	comp = 0;
+	elc = 0;
+	cartoon = 0;
+	shootgun = 0;
+	xtrd = 0;
+	ytrd = 0;
+	missx = 0;
+	missy = 0;
+	cgrah = 0;
+	cgsave = 0;
+	mison = 0;
+	photodandy = 0;
+	trd = 0;
+	numbvill;
+	hdso = 0;
+	talk = 0;
+	shopper = 0;
+	m1 = 100;
+	age = 0;
+	bladehurt = 5,
+		talktime = 0
+		;
+	//time_t start, end;//计时函数开启与结束
+
+
+	screenx = 0;
+	screeny = 0;
+	memory[0] = 10;//当前生命值
+	memory[1] = 15;//最大生命值
+	memory[2] = 100;//金钱
+	memory[3] = 0;//上一房间号
+	memory[4] = 600 - 11;;//纵坐标
+
+
+
+
+	/*mood[0][9] = txt9;
+	mood[0][10] = txt10;*/
+
+	//
+
+
+
+
+
+
+
+
+	system("color 07");//改变界面颜色
+
+
+
+	
+	
+	monmodel[0] =(char*)&monst1[0];monmodel[1] = (char*)&monst1[1]; mondelfor[0][0] = monst1for[0]; mondelfor[0][1] = monst1for[1];mondelfor[1][0] = monst1for[0]; mondelfor[1][1] = monst1for[1];
+	
+	monmodel[2]=(char*)&useblade1[0];monmodel[3] = (char*)&useblade1[1]; mondelfor[2][0] = useblade1for[0]; mondelfor[2][1] = useblade1for[1];mondelfor[3][0] = useblade1for[0]; mondelfor[3][1] = useblade1for[1];
+	
+	monmodel[4] = (char*)&useblade2[0];monmodel[5] = (char*)&useblade2[1];mondelfor[4][0] = useblade1for[0]; mondelfor[4][1] = useblade1for[1];mondelfor[5][0] = useblade1for[0]; mondelfor[5][1] = useblade1for[1];
+	
+	monmodel[6] = (char*)&useblade3[0];monmodel[7] = (char*)&useblade3[1];mondelfor[6][0] = useblade1for[0]; mondelfor[6][1] = useblade1for[1];mondelfor[7][0] = useblade1for[0]; mondelfor[7][1] = useblade1for[1];
+	
+	monmodel[8] = (char*)&useblade4[0];monmodel[9] = (char*)&useblade4[1];mondelfor[8][0] = useblade1for[0]; mondelfor[8][1] = useblade1for[1];mondelfor[9][0] = useblade1for[0]; mondelfor[9][1] = useblade1for[1];
+	
+	monmodel[10] = (char*)&useblade5[0];monmodel[11] = (char*)&useblade5[1];mondelfor[10][0] = useblade1for[0]; mondelfor[10][1] = useblade1for[1];mondelfor[11][0] = useblade1for[0]; mondelfor[11][1] = useblade1for[1];
+	
+	monmodel[12] = (char*)&useblade6[0];monmodel[13] = (char*)&useblade6[1];mondelfor[12][0] = useblade1for[0]; mondelfor[12][1] = useblade1for[1];mondelfor[13][0] = useblade1for[0]; mondelfor[13][1] = useblade1for[1];
+
+	
+	
+	
+
+	
+
+
+
+
+	一直循环
+	{
+		延迟(40);
+		if (GetKeyState(13) < 0) { break; }//
+		if (GetKeyState(65) < 0 && GetKeyState(68) < 0) { creater = 1;break; }//d和a一起按
+
+	}
+
+
+
+	HideCursor();
+}
+
+int doorr(int x1, int y1)
+{
+	x1 = x1 + 30 + 30;
+	y1 = 600 - y1;
+	dx[0][y1][x1 + 1] = 右门;
+	dx[0][y1][x1] = 右门;
+	dx[0][y1][x1 - 1] = 右门;
+	y1--;
+	dx[0][y1][x1] = 右门;dx[0][y1][x1 + 1] = 右门;
+	y1--;
+	dx[0][y1][x1] = 右门;dx[0][y1][x1 + 1] = 右门;
+	y1--;
+	dx[0][y1][x1] = 右门;dx[0][y1][x1 + 1] = 右门;
+	y1--;
+	dx[0][y1][x1] = 右门;dx[0][y1][x1 - 1] = 右门;
+	y1--;
+	dx[0][y1][x1] = 右门;dx[0][y1][x1 + 1] = 右门;
+	y1--;
+	dx[0][y1][x1] = 右门;dx[0][y1][x1 + 1] = 右门;
+	y1--;
+	dx[0][y1][x1] = 右门;dx[0][y1][x1 + 1] = 右门;
+	y1--;
+	dx[0][y1][x1] = 右门;
+	dx[0][y1][x1 + 1] = 右门;
+	dx[0][y1][x1 - 1] = 右门;
+
+	return x1 - 60;
+
+}
+
+int doorl(int x1, int y1)
+{
+	x1 = x1 + 30 + 30;
+	y1 = 600 - y1;
+	dx[0][y1][x1 + 1] = 左门;
+	dx[0][y1][x1] = 左门;
+	dx[0][y1][x1 - 1] = 左门;
+	y1--;
+	dx[0][y1][x1] = 左门;;dx[0][y1][x1 - 1] = 左门;
+	y1--;
+	dx[0][y1][x1] = 左门;;dx[0][y1][x1 - 1] = 左门;
+	y1--;
+	dx[0][y1][x1] = 左门;;dx[0][y1][x1 - 1] = 左门;
+	y1--;
+	dx[0][y1][x1] = 左门;;dx[0][y1][x1 + 1] = 左门;
+	y1--;
+	dx[0][y1][x1] = 左门;;dx[0][y1][x1 - 1] = 左门;
+	y1--;
+	dx[0][y1][x1] = 左门;;dx[0][y1][x1 - 1] = 左门;
+	y1--;
+	dx[0][y1][x1] = 左门;;dx[0][y1][x1 - 1] = 左门;
+	y1--;
+	dx[0][y1][x1] = 左门;
+	dx[0][y1][x1 + 1] = 左门;
+	dx[0][y1][x1 - 1] = 左门;
+
+	return x1 - 60;
+
+
+}
+
+int doorf(int x1, int y1) {
+	int a, b;
+	x1 = x1 + 30 + 30;
+	y1 = 600 - y1;
+	for (a = 0;a < 10;a++)
+		dx[0][y1][x1 + a] = 前门;
+	y1--;
+	dx[0][y1][x1] = 前门;
+	dx[0][y1][x1 + 9] = 前门;
+	y1--;
+	dx[0][y1][x1] = 前门;
+	dx[0][y1][x1 + 9] = 前门;
+	y1--;
+	dx[0][y1][x1] = 前门;
+	dx[0][y1][x1 + 9] = 前门;
+
+	y1--;
+	dx[0][y1][x1] = 前门;
+	dx[0][y1][x1 + 9] = 前门;
+	dx[0][y1][x1 + 3] = 前门;
+	y1--;
+	dx[0][y1][x1] = 前门;
+	dx[0][y1][x1 + 9] = 前门;
+	y1--;
+	dx[0][y1][x1] = 前门;
+	dx[0][y1][x1 + 9] = 前门;
+	y1--;
+	dx[0][y1][x1] = 前门;
+	dx[0][y1][x1 + 9] = 前门;
+	y1--;
+	dx[0][y1][x1] = 前门;
+	dx[0][y1][x1 + 9] = 前门;
+	for (a = 0;a < 10;a++)
+		dx[0][y1][x1 + a] = 前门;
+
+	return y1 + 8;
+
+}
+
+int doorb(int x1, int y1) {
+	int a, b;
+	x1 = x1 + 30 + 30;
+	y1 = 600 - y1;
+	for (a = 0;a < 10;a++)
+		dx[0][y1][x1 + a] = 后门;
+	y1--;
+	dx[0][y1][x1] = 后门;
+	dx[0][y1][x1 + 9] = 后门;
+	y1--;
+	dx[0][y1][x1] = 后门;
+	dx[0][y1][x1 + 9] = 后门;
+	y1--;
+	dx[0][y1][x1] = 后门;
+	dx[0][y1][x1 + 9] = 后门;
+
+	y1--;
+	dx[0][y1][x1] = 后门;
+	dx[0][y1][x1 + 9] = 后门;
+	dx[0][y1][x1 + 6] = 后门;
+	y1--;
+	dx[0][y1][x1] = 后门;
+	dx[0][y1][x1 + 9] = 后门;
+	y1--;
+	dx[0][y1][x1] = 后门;
+	dx[0][y1][x1 + 9] = 后门;
+	y1--;
+	dx[0][y1][x1] = 后门;
+	dx[0][y1][x1 + 9] = 后门;
+	y1--;
+	dx[0][y1][x1] = 后门;
+	dx[0][y1][x1 + 9] = 后门;
+	for (a = 0;a < 10;a++)
+		dx[0][y1][x1 + a] = 后门;
+
+	return y1 + 8;
+}
+
+void juxing(int x1, int l1, int y1, int l2)
+{
+	x1 = x1 + 30 + 30;
+	int f2, f1, c = l1;
+
+	y1 = 600 - y1;
+	for (f2 = y1;y1 + l2 - f2; f2++)
+	{
+		for (f1 = x1;x1 + l1 - f1; f1++)
+		{
+
+			dx[0][f2][f1] = 台;
+		}
+	}
+}
+
+void wall(int x1, int l1, int y1, int l2)
+{
+	x1 = x1 + 30 + 30;
+	int f2, f1, c = l1;
+	y1 = 600 - y1;
+	for (f2 = y1;y1 + l2 - f2; f2++)
+	{
+		for (f1 = x1;x1 + l1 - f1; f1++)
+		{
+			dx[0][f2][f1] = 墙;
+
+		}
+	}
+}
+
+void watcb/*显示函数*/(char *sh, char creator, short int ep, short int en, char ch1, char ch2, char *ui)
+{
+	register  int
+		*c1, //静态像素（房屋 建筑 背景所在的层）
+		*c2, //动态像素（主角与生物发生逻辑的层）
+		*c3, //特效像素（会动并不影响游戏逻辑的层）
+		*c4; //远景像素（远处的背景，会被静态像素遮挡）
+	int a, b;
+
+
+	if (creator > 0)
+		//开发者模式————————————————————————————————————————
+		for (b = en - 31;en >= b;b++)//10
+		{
+			//--------------------------------------------------------
+			//a,b为发生层函数
+			//screenx,screeny为投影层函数
+			//--------------------------------------------------------
+			for (a = ep - 120, c1 = &dx[0][b][a]/*静态像素*/, c2 = &dx[1][b][a]/*动态像素*/, c3 = &dx[2][b][a]/*特效像素*/,c4=&dx[3][b][a];ep >= a;a++, sh++, c1++, c2++, c3++, ui++)
+			{
+
+				//c2 = c1+5000000;//动态像素dx[1][b][a]的偏差值为5*10^6
+
+
+				//神tm逻辑门
+				//1+0=1||0+1=1
+				//1+1=0||0+0=1
+				
+				if (*c3 > 0)*sh = ch2;
+				else {
+					if (*c2 > 0)*sh = ch2;
+					else {
+						if (*c1 != 0 && *c1 != 遮挡)*sh = ch2;
+						else 
+						{
+							if (*c4 > 0)
+								if(*c1==0)*sh = ch2;
+								else *sh = ch1;
+							else
+							{
+								*sh = ch1;
+							}
+
+						}
+					}
+				}
+				
+
+				//神tm逻辑门
+
+
+
+				*c3 = 0;//清理特效像素（局部清理）
+
+				switch (picture[b][a])
+				{
+				case 35:*sh = '#';break;
+				case 42:*sh = '*';break;
+					//default:;
+				}
+
+
+				//字符投影层
+				if (*ui == 1);
+				else
+				{
+					*sh = *ui, *ui = 1;
+				}
+				//字符投影层
+
+
+			}
+			sh += 79;//指针的跳位到下一行
+			ui += 79;//指针的跳位到下一行
+		}
+	else
+		//非开发者模式——————————————————————————————————————————
+		for (b = en - 31;en >= b;b++)//10
+		{
+			//--------------------------------------------------------
+			//a,b为发生层函数
+			//screenx,screeny为投影层函数
+			//--------------------------------------------------------
+			for (a = ep - 120, c1 = &dx[0][b][a]/*静态像素*/, c2 = &dx[1][b][a]/*动态像素*/, c3 = &dx[2][b][a]/*特效像素*/, c4 = &dx[3][b][a];ep >= a;a++, sh++, c1++, c2++, c3++, ui++)
+			{
+
+
+
+
+				if (*c3 > 0)*sh = ch2;
+				else {
+					if (*c2 > 0)*sh = ch2;
+					else {
+						if (*c1 != 0 && *c1 != 遮挡)*sh = ch2;
+						else
+						{
+							if (*c4 > 0)
+								if (*c1 == 0)*sh = ch2;
+								else *sh = ch1;
+							else
+							{
+								*sh = ch1;
+							}
+
+						}
+					}
+				}
+				//printf("%c", ch2);
+				*c3 = 0;//清理特效像素
+				if (*ui == 2);
+				else
+				{
+					*sh = *ui, *ui = 2;
+				}
+			}
+			sh += 79;//指针的补位
+			ui += 79;//对话界面补位
+		}
+	for (register int ps = (int)(&dx[1][0][0] + 5000000), *s = &dx[1][0][0];(int)s < ps;*(s++) = 0);//清理整个逻辑层的动态像素（全屏清理）
+
+
+}
+
+void tablevise(char *txt, char*sh, int y, int x, int tim)
+{
+	if (y < 0 || x < 0 || x>32 || y>32) exit(0);
+	else
+		sh += 32 * y + x;
+	for (;*txt != '\0';txt++, sh++)
+	{
+		if (*sh == '\n' || *sh == '\0') break;
+		else
+			*sh = *txt;
+	}
+
+}
+
+void tabledit/*编辑显示内容*/(char *txt, char*sh, int y, int x, int tim, ...)
+{
+	if (y < 0 || x < 0) exit(0);//防出界
+	else
+		sh += 100 * y + x;//确定文字插入起点
+	char model[65] = { 0 };
+	for (int times = 0, *o = &tim;*txt != '\0';txt++, sh++)
+	{
+		if (*txt == '%')
+		{
+			switch (*(txt + 1))
+			{
+			case 'd':
+			{times++;
+			int model2[12] = { 0 },*z= model2;
+			if (*o < 0) { *o = 0; }
+			xxmathtoolxx(*(o + times), z);
+
+			int b;
+			for (int a = 0;a < 12;)
+				if (model2[a++] == 0 && model2[a] == 0)
+				{
+					a -= 2;b = a;
+					while (a >= 0)
+						model[b - a] = model2[a--];
+
+					break;
+				}
+			if (b)
+			{
+				txt += 2;
+				for (int c = 0;c <= b;)
+				{
+					*sh++ = model[c++];
+				}
+
+
+			}
+			else {
+				txt += 1;
+				for (int c = 0;c < b;)
+				{
+					*sh++ = model[c++];
+				}
+
+
+
+			}
+
+			//*sh++;
+
+			}
+
+			break;
+			}
+		}
+		if (*sh == '\n' || *sh == '\0') break;
+		else
+
+			*sh = *txt;
+	}
+}
+
+//主屏幕编辑显示内容
+int watce(const char *txt, char*sh, int y, int x, int tim)
+{
+	if (y < 0 || x < 0 || x>200 || y>32) return 0;
+	else
+		sh += 200 * y + x;
+	for (;*txt != '\0';txt++, sh++)
+	{
+		if (*sh == '\n' || *sh == '\0') break;
+		else
+			*sh = *txt;
+
+	}
+}
+
+void leftscreen(int mode)//mode为界面是否显示
+{
+	int tablex = 30, tabley = 0;
+	if (mode == 0)
+	{
+		if (tablex > 30)
+			if (tablex > 34)
+				tablex -= 2;
+			else tablex--;
+	}
+	else//侧显示屏不显示 
+	{
+		for (int b = 0;b < 34;b++)
+			for (int a = 0;a < 31;a++)
+			{
+				showtmir[b][a] = ' ';
+			}
+		if (tablex < 60)
+			if (tablex < 56)
+				tablex += 2;
+			else tablex++;
+	}
+
+
+	for (int b = 0;b < 100;b++)
+		for (int a = 0;a < 100;a++)
+		{
+			showt[b][a] = ' ';
+		}//人物面板刷新
+	for (int a = 0;a < 34;a++)
+		showt[a + tabley][0 + tablex] = '{';
+	for (int a = 0;a < 34;a++)
+		showt[a + tabley][30 + tablex] = '}';
+	for (int a = 1;a < 30;a++)
+		showt[0 + tabley][a + tablex] = '~';
+	for (int a = 1;a < 30;a++)
+		showt[31 + tabley][a + tablex] = '_';
+
+	tabledit(n1, (char*)&showt, 1 + tabley, 1 + tablex, 1);
+	tabledit("就是kazi", (char*)&showt, 1 + tabley, 5 + tablex, 1);
+	tabledit(n1, (char*)&showt, 4 + tabley, 1 + tablex, 1);
+	tabledit("的小钱钱￥%d ", (char*)&showt, 4 + tabley, 5 + tablex, 1, m1);
+	tabledit(n1, (char*)&showt, 5 + tabley, 1 + tablex, 1);
+	tabledit("的体力%d/%d ", (char*)&showt, 5 + tabley, 5 + tablex, 2, heart1, heart2);
+	tabledit("不要问背包,问就是异次元菊花 ", (char*)&showt, 6 + tabley, 1 + tablex, 0);
+	tabledit("刷新数%d ", (char*)&showt, 7 + tabley, 1 + tablex, 1, 1000 / (tme + 1));
+	tabledit("(%d,%d) ", (char*)&showt, 8 + tabley, 1 + tablex, 2, x, y);
+	开发者调试
+	{
+	tabledit("按Alt打开画板设置菜单", (char*)&showt, 9 + tabley, 1 + tablex, 1);
+	if (picmeun == 0)
+	{
+		tabledit("请右键点击 “#” 进行四次定位", (char*)&showt, 9 + tabley, 1 + tablex, 1);
+		tabledit("目前已经定位次数：%d ", (char*)&showt, 10 + tabley, 1 + tablex, 1, kdraw);
+	}
+	if (picmeun == 1)
+	{
+		tabledit("按d打开画图面板定位", (char*)&showt, 9 + tabley, 1 + tablex, 1);
+		tabledit("按m打开地图编辑器", (char*)&showt, 9 + tabley, 1 + tablex, 1);
+	}
+	if (picmeun == 2)
+	{
+		tabledit("当前工具：", (char*)&showt, 10 + tabley, 1 + tablex, 0);
+
+		switch (t)
+		{
+		case 0:  tabledit("  画笔 ", (char*)&showt, 10 + tabley, 12 + tablex, 0);break;
+		case 1:  tabledit("  橡皮 ", (char*)&showt, 10 + tabley, 12 + tablex, 0);break;
+		case 2:  tabledit("  直线工具 ", (char*)&showt, 10 + tabley, 12 + tablex, 0);break;
+		case 3:  tabledit("  镜像工具 ", (char*)&showt, 10 + tabley, 12 + tablex, 0);break;
+		case 4:  tabledit("  临时台阶工具 ", (char*)&showt, 10 + tabley, 12 + tablex, 0);break;
+		case 5:  tabledit("  三角形工具 ", (char*)&showt, 10 + tabley, 12 + tablex, 0);break;
+		}
+
+
+	}
+	if (GetKeyState(18) < 0) {
+		
+			 		
+		tabledit("鼠标当前坐标%d,%d  ", (char*)&showt, 11 + tabley, 1 + tablex, 2, ptd.x, ptd.y);
+		tabledit(" 4点定位的偏差值%d,%d  ", (char*)&showt, 12 + tabley, 1 + tablex, 2, (int)xstep * 1000, (int)ystep * 1000);
+
+
+
+	if (picmeun == 2)
+	{
+
+		tabledit("已确认初始位点 ", (char*)&showt, 13 + tabley, 1 + tablex, 0);
+		
+		
+
+	}
+
+	}
+	}
+	for (int b = 0;b < 34;b++)
+		for (int a = 0;a < 31;a++)
+		{
+
+			showtmir[b][a] = showt[b][a + 30];
+
+
+		}
+}
+
+//xend为插入终地址,x为起始地址
+void invboard(char*sh, int y, int x, int xend)
+{
+
+	short int numb = xend - x;
+	if (numb > 0)
+	{
+		sh += 200 * y + x;
+		*sh++ = '|';
+		for (int a = 1; a < numb;sh++, a++)
+		{
+			*sh = ' ';
+		}
+
+	}
+}
+
+void BOX(int x1, int y1, int e)
+{
+	char box[5][9] =
+	{
+
+		0,0,2,2,2,2,2,0,0,
+		2,2,2,2,2,2,2,2,2,
+		2,1,1,2,2,2,1,1,2,
+		2,1,2,1,1,1,2,1,2,
+		2,2,2,2,2,2,2,2,2,
+
+	};
+	
+		x1 = x1 + 30 + 30;
+		y1 = 600 - y1;
+		int a = 0, b = 0;
+		for (int n1=0;n1<5;n1++)
+			for(int n2=0;n2<9;n2++)
+			{
+				switch (box[n1][n2])
+				{
+				case 1:dx[0][y1 + n1][x1 + n2] = 遮挡;
+					break;
+				case 2:dx[0][y1 + n1][x1 + n2] = 4;
+					break;
+
+				default:;
+
+				}
+
+
+			}
+
+		
+	
+
+}
+
+void 人物操作(int ha)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+{
+#define cc 21 
+	if (ha) { ax[1] = 0;V1 = 0;V2 = 0; }
+	else {
+		A键按下{  ax[1] = ax[1] - 2;if (ax[1] <= -6)ax[1] = -6;con = -1;if (act1 == 0)act1 = 1; ax[cc]+=-5; }//a
+		D键按下{  ax[1] = ax[1] + 2;if (ax[1] >= 6)ax[1] = 6; con = 1;if (act1 == 0)act1 = 1; ax[cc]+=5; }//d
+		W键按下{ if (keyhit[87] == 0 && f[1] == 1 && room != 10000) { y = y - 2;Vy1monst[1] -= 4; keyhit[87] = 1; } }//w
+		else { keyhit[87] = 0; }
+
+		J键按下{ keyhit[74] = 1;if (act1 == 0)act1 = 1;if (act3++ > 190)act3 = 0; }//j
+			else
+			{
+			if (keyhit[74] == 1) {
+				if (act3 < 15)act3 = 150; keyhit[74] = 0;
+
+			}
+			else act3 = 0;
+			}
+
+
+			S键按下{ if (act1 == 0)act1 = 1;keyhit[83] = 1;V1 = 0;V2 = 0;ax[1] = 0; }
+		else { sit = 0;if (f[1] == 1 && keyhit[83] == 1) { keyhit[83] = 0; sit = 1; } }//s
+		K键按下{ keyhit[75] = 1;keyhit[75] = 0;shootgun = 1;ax[1] = 0;V1 = 0;V2 = 0; }
+		else if (keyhit[75] > 0) { keyhit[75] = 0;shootgun = 0; }//k
+
+	}
+	if (act1 == 7) { ax[1] = 0;V1 = 0; }//当动作是蓄力斩时，主角无法移动
+     
+	if (GetKeyState(37)) { /*axmonst[cc] = -1;*/ }//左
+	if (GetKeyState(38)) {}//上
+	if (GetKeyState(39)) { /*axmonst[cc] = 1;*/ 
+	}//右
+	if (GetKeyState(40)) {}//下
+
+}
+
+/*if (_kbhit()){
+						act1 = 1;switch (_getch()) {
+						case'a': {if (act2 == 0 && V2 > -2)x--;if (d[y + 4][x - 3] == 3 || d[y + 8][x - 3] == 3 || d[y + 8][x - 2] == 3)x++; ax = 0; ax = ax - 6;if (ax <= -12)ax = -12;con = -1;act3 = 0;break;}
+						case'd': { if (act2 == 0 && V2 < 2)x++;if (d[y + 4][x + 3] == 3 || d[y + 8][x + 3] == 3 || d[y + 8][x + 2] == 3)x--;ax = 0;ax = ax + 6;if (ax >= 12)ax = 12; con = 1;act3 = 0;break;}
+						case's':if (f == 1) { V1 = 0;V2 = 0;ax = 0;sit = 1;break; }
+						case'w': { if (f == 1 && room != 10000)y = y - 8; }break;
+						case'j': { ax = 0;act3++;break;}
+						case'1': meun = 1;break;
+						case'2':meun = 2;break;
+						case'3':meun = 3;break;
+						case'4':meun = 4;break;
+						case'5':meun = 5;break;
+						case'6':meun = 6;break;
+						case'7':meun = 7;break;
+						case'8':meun = 8;break;
+						case'9':meun = 9;break;
+						case'0':meun = 0;break;
+						case'x':y = 0;break;
+						case'\n':meun = '*';break;
+						case'k':shootgun = 1;ax = 0;ay = 0;V1 = 0;V2 = 0;break;
+						case 0x1b:table = 1;goto contable;break;
+
+						}
+					}
+					else { act1 = 0;ax = 0;act3 = 0;sit = 0;meun = 168; }*/
+
+void reroom()
+{
+	mop[room] = 0;//每次返回任务重置数据点
+			down = 0;//下屏刷新初始化
+			talktime = 0;
+			eit = 0;
+			trad = 0;
+			hdso = 0;
+			vill = 0;
+			j2 = j4;
+			//****************
+			//*切图后重置怪物*
+			//****************
+			for (b = 1;b < 100;b++)
+				for (a = 0;a < 100;a++)
+				{
+					if (monst[b][a] > 0)
+					{
+						monst[b][a] = 0;
+					}
+					if (die[a] == 1)die[a] = 2;
+				}
+			//****************
+			//*切图后重置怪物*
+			//****************
+			for (b = 1;b < 50;b++)
+				for (a = 0;a < 50;a++)
+				{
+					if (visual[b][a] > 0)
+					{
+						visual[b][a] = 0;
+					}
+
+				}
+			//******
+			//*清屏*
+			//******
+			for (a = 0;a < 1000;a++)
+				for (b = 0;b < 5000;b++)
+				{
+					dx[0][a][b] = 0;
+					dx[1][a][b] = 0;
+					dx[2][a][b] = 0;
+				}
+			//******
+			//*清屏*
+			//******
+			talktime = 0;
+			dieword = 0;
+
+
+
+			o2 = 0;//每次场景更换后对话刷新的标志
+			talk = 0;//更换场景后面板刷新
+			//任务，场景
+}
+
+//插入语
+
+//导向标志（背景建筑）
+void dicr(int x1, int y1)
+{
+	x1 = x1 + 30 + 30;
+	int a, b;
+	y1 = 600 - y1;
+
+	for (a = 0;a < 2;a++) { dx[0][y1 - 3][x1 - a] = 背景; }
+	for (a = 1;a < 5;a++) { dx[0][y1 - 3][x1 + a] = 背景; }
+	for (a = 0;a < 6;a++) { dx[0][y1 - 4][x1 - a] = 背景; }
+	for (a = 1;a < 6;a++) { dx[0][y1 - 4][x1 + a] = 背景; }
+	for (a = 1;a < 7;a++) { dx[0][y1 - 5][x1 + a] = 背景; }
+	for (a = 0;a < 6;a++) { dx[0][y1 - 6][x1 - a] = 背景; }
+	for (a = 1;a < 6;a++) { dx[0][y1 - 6][x1 + a] = 背景; }
+	for (a = 0;a < 2;a++) { dx[0][y1 - 7][x1 - a] = 背景; }
+	for (a = 1;a < 5;a++) { dx[0][y1 - 7][x1 + a] = 背景; }
+}
+
+void blade(int l)
+{
+	
+}
+
+void totalhurt(int x,int y,int ragex,int ragey,char *p,int hurtnumb) {}
+
+int sectx(int x1, int y1,int id, int e)
+{
+#define 最大刷怪数 15
+	/*关卡设计id表
+	----------------------------------------------------------------------------------------
+	|怪物                        monst[][]
+	|史莱姆                      monst[1]
+	|蝙蝠                        monst[2]
+	|旗子                        monst[3]
+	|韩德索                      monst[10][0]
+	|守卫                        monst[12]
+	|村民                        monst[11]
+	|
+	|
+	|
+	----------------------------------------------------------------------------------------
+	*/
+	int f;
+	int cha, numb;
+	int xr = 0;
+	char *p = 0;
+	int
+		lengthx = 0,//接口x
+		lengthy = 0;//接口y
+	switch (e)
+	{
+	case 0:
+		switch (act1)
+		{case 0:f = 1;break;
+		case 1:f = 1;break;
+		case 3:f = 1;break;
+		case 4:f = 1;break;
+		case 8:if (con > 0)f = 2;else f = 3;break;
+		case 9:if (con > 0)f = 4;else f = 5;break;
+		case 10:if (con > 0)f = 6;else f = 7;break;
+		case 11:if (con > 0)f = 8;else f = 9;break;
+		case 12:if (con > 0)f = 10;else f = 11;break;
+		case 13:if (con > 0)f = 12;else f = 13;break;
+		case 14:break;
+		case 15:break;
+		case 16:break;
+		default:break;
+		}
+		
+		if (V2monst[id]>0)
+		{
+			cha = mondelfor[0][1]-1;
+			numb = -1;
+		}
+		if(V2monst[id]<0)
+		{
+			cha = 0;
+			numb = 1;
+		}
+		xr = mondelfor[0][1] / 2;
+		p = monmodel[f] + cha;
+		for (char b = 0;b < mondelfor[0][0]-2;b++,p+=mondelfor[0][1])
+		{
+			char*p1 = p;
+			for(int a=0;a<xr;a++,p1+=numb)
+			{
+				if (*p1 == 2)
+				{
+					if (dx[0][y1 + b][x1 + cha - xr + (numb*a)] == 3)return 1;
+					break;
+					
+
+				}
+				
+			}
+		}
+		for (char b = mondelfor[0][0]-2; b < mondelfor[0][0];b++, p += mondelfor[0][1])
+		{
+			char*p1 = p;
+			for (int a = 0;a < xr;a++, p1 += numb)
+			{
+				if (*p1 == 2)
+				{
+					if (dx[0][y1 + b][x1 + cha - xr + (numb*a)] == 3)return 2;
+					break;
+
+
+				}
+
+			}
+		}
+
+		
+
+		break;
+	case 1:
+		
+
+		lengthx = 11;//接口x
+		lengthy = 8;//接口y
+		
+		switch (actmonst[id])
+		{
+		case 1:
+
+			for (int a = 0;a < lengthy;a += 1)
+				for (int b = 0;b < lengthx;b++)
+				{
+					if (slap1[a][b] == 3 && (dx[0][ym[id] + a][xm[id] + b - lengthx / 2] == 3))
+					{
+					
+						return 3;
+					}
+					if (slap1[a][b] == 4 && (dx[0][ym[id] + a][xm[id] + b - lengthx / 2] == 3))
+					{
+
+						return 4;
+					}
+
+
+
+
+				}
+			break;
+		case 2:
+			
+			break;
+		case 3:
+			
+
+		default:;
+
+		}
+		break;
+	case 2:break;
+	case 3:break;
+	case 4:break;
+	case 5:break;
+	case 6:break;
+	case 7:break;
+	case 8:break;
+	case 9:break;
+		
+
+
+
+	}
+	return 0;
+}
+
+int secty(int x1, int y1,int id,int e)
+{
+#define 最大刷怪数 15
+	/*关卡设计id表
+	----------------------------------------------------------------------------------------
+	|怪物                        monst[][]
+	|史莱姆                      monst[1]
+	|蝙蝠                        monst[2]
+	|旗子                        monst[3]
+	|韩德索                      monst[10][0]
+	|守卫                        monst[12]
+	|村民                        monst[11]
+	|
+	|
+	|
+	----------------------------------------------------------------------------------------
+	*/
+	int f;
+	
+	int cha, numb;
+	int xr = 0;
+	int
+		lengthx = 0,//接口x
+		lengthy = 0;//接口y
+	switch (e)
+	{
+	case 0:
+		switch (act1)
+		{case 0:f = 1;break;
+		case 1:f = 1;break;
+		case 3:f = 1;break;
+		case 4:f = 1;break;
+		case 8:if (con > 0)f = 2;else f = 3;break;
+		case 9:if (con > 0)f = 4;else f = 5;break;
+		case 10:if (con > 0)f = 6;else f = 7;break;
+		case 11:if (con > 0)f = 8;else f = 9;break;
+		case 12:if (con > 0)f = 10;else f = 11;break;
+		case 13:if (con > 0)f = 12;else f = 13;break;
+		case 14:break;
+		case 15:break;
+		case 16:break;
+		default:break;
+		}
+		lengthx = 7;//接口x
+		lengthy = 10;//接口y
+
+	
+			for (int a = 0;a < lengthy;a += 1)
+				for (int b = 0;b < lengthx;b++)
+				{
+					if (monst1[a][b] == 6
+						&& (dx[0][ym[id] + a][xm[id] + b - lengthx / 2] == 3
+							|| dx[0][ym[id] + a][xm[id] + b - lengthx / 2] == 2))return 1;
+
+
+
+
+				}
+		
+		break;
+	case 1:
+		
+		lengthx = 11;//接口x
+		lengthy = 8;//接口y
+		
+		switch (actmonst[id])
+		{
+		case 1:
+			for (int a = 0;a < lengthy;a+=1)
+				for (int b = 0;b < lengthx;b++)
+				{
+					if (slap1[a ][b ] == 6 
+						&& (dx[0][ym[id] + a][xm[id] + b - lengthx / 2] == 3
+						|| dx[0][ym[id] + a][xm[id] + b - lengthx / 2] == 2))return 1;
+					 
+					
+						
+					
+				}
+			break;
+		case 2:
+
+			break;
+		case 3:
+
+
+		default:;
+
+		}
+		break;
+	case 2:break;
+	case 3:break;
+	case 4:break;
+	case 5:break;
+	case 6:break;
+	case 7:break;
+	case 8:break;
+	case 9:break;
+		
+
+
+
+	}
+	return 0;
+}
+
+void physicsengine(int *x,int *y,int id, int modnumb)
+{
+	
+	
+		//摩擦力系数
+		if (f[id] == 1 && ax[id]==0)
+		{
+			V1monst[id] = V1monst[id] / 1.2;;if (V1monst[id]<0.1&&V1monst[id]>-0.1) { V1monst[id] = 0; }
+		}
+		//物理引擎
+		//猛汉跳楼模拟器
+		if (secty(*x, *y, id, modnumb) == 0)
+		{
+			if (aY[id] < 2)aY[id] += 0.5;if (Vy1monst[id] < 8)Vy1monst[id] = Vy1monst[id] + aY[id] / 1.2;Vy2monst[id] = Vy1monst[id];
+			if (Vy2monst[id] > 0)
+				for (;0 < Vy2monst[id];Vy2monst[id]--)//下落检测
+				{
+					*y+=1;if (secty(*x, *y,id, modnumb))
+					{
+						f[id] = 1;aY[id] = 0;Vy1monst[id] = 0;Vy2monst[id] = 0;break;
+					}
+				}
+			else
+			{
+				for (;Vy2monst[id] < 0;Vy2monst[id]++)
+				{
+					if (dx[0][*y - 1][*x] == 3 || dx[0][*y - 1][*x + 1] == 3 || dx[0][*y - 1][*x - 1] == 3)
+					{
+						Vy1monst[id] = -Vy1monst[id];break;
+					}
+					else *y-=1;
+
+				}
+
+			}
+
+
+			f[id] = 0;
+		}
+		else { f[id] = 1;aY[id] = 0;Vy1monst[id] = 0;Vy2monst[id] = 0; }
+		//猛汉跳楼模拟器
+
+		if (ax[id] != 0)
+		{
+			
+			
+			act1 = 1;
+			V1monst[id] = V1monst[id] + ax[id] / 12;
+
+			
+			//if (id == 21)
+				printf("   %d   ", max[id]);
+
+			if (V1monst[id] <= -max[id]) { V1monst[id] = -max[id];act1 = 3; }
+			else if (V1monst[id] >= max[id]) { V1monst[id] = max[id]; act1 = 4; }
+			
+			
+		}
+
+		V2monst[id] = (int) V1monst[id];
+
+		if (id == 21)
+			printf("%f", V1monst[id]);
+
+		if (V2monst[id] > 0)
+		{
+			{for (a = 0;a < V2monst[id];a++)
+			{
+				if (sectx(*x, *y , id, modnumb)==4)
+				{
+					act2 = 1;V1monst[id] = 0;V2monst[id] = 0;ax[id] = 0;*x = *x - 2;break;
+				}
+				else act2 = 0;
+
+				if (sectx(*x, *y, id, modnumb) == 2)
+					*y-=1;//便于上楼梯函数
+				
+				*x+=1;
+			}
+			}
+
+		}
+		if (V2monst[id] < 0)
+		{
+			{for (a = 0;a + V2monst[id];a++)
+			{
+				if (sectx(*x, *y , id, modnumb)==3)
+				{
+					act2 = 1;V1monst[id] = 0;V2monst[id] = 0;ax[id] = 0;*x = *x + 2;break;
+				}
+				else act2 = 0;
+
+				if (sectx(*x, *y, id, modnumb) == 2)
+					*y -= 1;//便于上楼梯函数
+				
+				*x-=1;
+			}
+			}
+		}
+	
+
+	
+}
+
+void slim(int x2, int y2, int h1, int id, int r) 
+{
+	/*
+  ---------------------------------------------------------------------------------------------------------------------------------------------
+						   函数分为逻辑区与对话区
+   常用参数 a,b，Ay
+   x2					初始化横坐标													y2					初始化纵坐标
+   h1					初始化生命														id					怪物逻辑编号
+   r					怪物寻敌半径													e					是否为逻辑/对话
+   die[id]				怪物死亡不在运行标志											i[id]				怪物的实际生命值+1
+   x1					怪物横坐标														y1					怪物纵坐标
+   xm[id]				怪物实际横坐标											    	ym[id]				怪物实际纵坐标
+   Vy2					怪物当前速度（整型）											max					最大速度
+   yfork				武器横坐标														xfork				武器纵坐标
+   nice[id]				怪物善恶值													    ato[id]				怪物当前状态为巡逻/发现敌人
+   fag[0]				是前往目标的标志												fag[1]				是第一个目标坐标
+   fag[2]				是第二个目标坐标												fag[3]				是怪物是否落地
+   aY[id]				怪物纵向加速度													axmonst[id]			怪物横向加速度
+   actmonst[id]			怪物当前动作模型                                                dx[0][][]=id            怪物在游戏中逻辑层的模型
+   vY[id]               怪物当前纵向速度(浮点数)										Vy2[id]				怪物当前纵向速度（整型）
+   hurteen[id]          怪物受伤标志                                                    diewordx[0][id]         当怪物战斗中途触发的对话
+   axmonst[id]          怪物横向加速度                                                  conmonst[id]        怪物左右朝向
+   V1monst[id]          怪物横向速度（浮点数）                                          V2monst[id]         怪物横向速度整型数
+   meun                 怪物对话深度（层次）                                            acttime[id]         当前动作持续的帧数（时间）
+  ----------------------------------------------------------------------------------------------------------------------------------------------
+  */
+
+	if (die[id] < 1)
+	{
+		if (i[id] == 0)//怪物数据函数初始化 
+		{
+			xm[id] = x2 + 60;
+			ym[id] = 600 - y2;
+			i[id] = h1 + 1;
+			fag[id][1] = xm[id] + r;
+			fag[id][2] = xm[id] - r;
+			ato[id] = 1;aY[id] = 0;
+			hurteen[id] = i[id];
+			actmonst[id] = 0;
+		}
+		int x1 = xm[id], y1 = ym[id], Vy2 = 0;
+		int a = 0, b = 0;
+		//寻敌
+
+		
+		
+		if (i[id] > 1)
+		{//生命等于0时
+			if (i[id] < 10000)
+			{
+				actmonst[id] = 1;
+				if (ato[id] == 1)//巡航，巡逻
+				{
+					//*************************
+					//*fag[0]是前往目标的标志 *
+					//*fag[1]是第一个目标坐标 *
+					//*fag[2]是第二个目标坐标 *
+					//*fag[3]是怪物是否落地   *
+					//*************************
+				}
+				
+				physicsengine(&xm[id], &ym[id], id, 1);
+				dx[2][ym[id]-4][xm[id] ] = id;
+				dx[2][ym[id]-2][xm[id] ] = id;
+				dx[2][ym[id]-3][xm[id] ] = id;
+				dx[2][ym[id]-1][xm[id]] = id;
+
+
+
+
+
+			}
+
+		}
+		if (i[id] < 2)
+		{
+
+			i[id] = 10000;//死亡区
+			mop[room]++;//怪物死亡对关卡的回馈
+			die[id]++;
+			actmonst[id] = 0;
+		}
+
+	}
+}
+
+void manbat(int x2, int y2, int h1, int id, int r)
+{/*
+  ---------------------------------------------------------------------------------------------------------------------------------------------
+						   函数分为逻辑区与对话区
+   常用参数 a,b，Ay
+   x2					初始化横坐标													y2					初始化纵坐标
+   h1					初始化生命														id					怪物逻辑编号
+   r					怪物寻敌半径													e					是否为逻辑/对话
+   die[id]				怪物死亡不在运行标志											i[id]				怪物的实际生命值+1
+   x1					怪物横坐标														y1					怪物纵坐标
+   xm[id]				怪物实际横坐标											    	ym[id]				怪物实际纵坐标
+   Vy2					怪物当前速度（整型）											max					最大速度
+   yfork				武器横坐标														xfork				武器纵坐标
+   nice[id]				怪物善恶值													    ato[id]				怪物当前状态为巡逻/发现敌人
+   fag[0]				是前往目标的标志												fag[1]				是第一个目标坐标
+   fag[2]				是第二个目标坐标												fag[3]				是怪物是否落地
+   aY[id]				怪物纵向加速度													axmonst[id]			怪物横向加速度
+   actmonst[id]			怪物当前动作模型                                                dx[0][][]=id            怪物在游戏中逻辑层的模型
+   vY[id]               怪物当前纵向速度(浮点数)										Vy2[id]				怪物当前纵向速度（整型）
+   hurteen[id]          怪物受伤标志                                                    diewordx[0][id]         当怪物战斗中途触发的对话
+   axmonst[id]          怪物横向加速度                                                  conmonst[id]        怪物左右朝向
+   V1monst[id]          怪物横向速度（浮点数）                                          V2monst[id]         怪物横向速度整型数
+   meun                 怪物对话深度（层次）                                            acttime[id]         当前动作持续的帧数（时间）
+  ----------------------------------------------------------------------------------------------------------------------------------------------
+  */
+
+	if (die[id] < 1) {
+		int x1 = 0, y1 = 0, a = 0, b = 0, Vy2 = 0, max = 3, atk = 3;
+		if (i[id] == 0)//怪物数据函数初始化 
+		{
+			x2 = x2 + 30 + 30;
+			xm[id] = x2;ym[id] = y2;i[id] = h1 + 1;ym[id] = 600 - ym[id];fag[id][1] = xm[id] + r;fag[id][2] = xm[id] - r;ato[id] = 1;aY[id] = 0;
+		}
+
+		//寻敌
+
+
+		if ((x >= xm[id] && x - xm[id] < 80) || (x < xm[id] && xm[id] - x < 80)) { ato[id] = 0; }
+		else { ato[id] = 1; }
+
+
+
+
+
+		if (ato[id] == 1)//巡航，巡逻
+		{
+			axmonst[id] = 0;V2monst[id] = 0;V1monst[id] = 0;
+
+		}
+		else
+		{
+			if (x > xm[id]) { if (axmonst[id] < 0)axmonst[id] = 0;axmonst[id]++; }
+			else { if (axmonst[id] > 0)axmonst[id] = 0;axmonst[id]--; }
+			if (y + 4 > ym[id]) { if (ayfly[id] < 0)ayfly[id] = 0;ayfly[id]++; }
+			else { if (ayfly[id] > 0)ayfly[id] = 0;ayfly[id]--; }
+			if ((y + 5 - ym[id]<5 && y + 5>ym[id]) || (ym[id] - y - 5 - ym[id]<5 && ym[id]>y + 5))
+				if ((x - xm[id]<5 && x > xm[id]) || (xm[id] - x < 5 && x < xm[id])) { heart1 = heart1 - atk; }
+
+		}
+
+
+
+
+
+
+		if (axmonst[id] != 0)
+		{
+			V1monst[id] = V1monst[id] + axmonst[id] / 10;V2monst[id] = V1monst[id];
+			if (V1monst[id] <= -max) { V1monst[id] = -max; }
+			else if (V1monst[id] >= max) { V1monst[id] = max; }
+		}
+		if (V2monst[id] > 0)
+		{
+			{for (a = 0;a < V2monst[id];a++)
+			{
+				if (
+					dx[0][y - 8][x + 2] == 4 || dx[0][y - 7][x + 2] == 4 || dx[0][y - 6][x + 2] == 4 || dx[0][y - 5][x - 2] == 4 || dx[0][y - 4][x + 3] == 4 || dx[0][y - 3][x - 3] == 4 || dx[0][y - 1][x - 2] == 4 || dx[0][y][x - 2] == 4
+					)
+				{
+					V1monst[id] = 0;V2monst[id] = 0;axmonst[id] = 0;xm[id] = xm[id] - 3;break;
+				}
+
+				xm[id]++;
+			}
+			}
+
+		}
+		if (V2monst[id] < 0)
+		{
+			{for (a = 0;a + V2monst[id];a++)
+			{
+				if (
+					dx[0][y - 8][x - 2] == 4 || dx[0][y - 7][x - 2] == 4 || dx[0][y - 6][x - 2] == 4 || dx[0][y - 5][x - 2] == 4 || dx[0][y - 4][x - 3] == 4 || dx[0][y - 3][x - 3] == 4 || dx[0][y - 1][x - 2] == 4 || dx[0][y][x - 2] == 4
+					)
+				{
+					V1monst[id] = 0;V2monst[id] = 0;axmonst[id] = 0;xm[id] = xm[id] + 3;break;
+				}
+
+				xm[id]--;
+			}
+			}
+
+		}
+
+
+
+		if (ayfly[id] != 0)
+		{
+			Vy1monst[id] = Vy1monst[id] + ayfly[id] / 10;Vy2monst[id] = Vy1monst[id];
+			if (Vy1monst[id] <= -max) { Vy1monst[id] = -max; }
+			else if (Vy1monst[id] >= max) { Vy1monst[id] = max; }
+		}
+		if (Vy2monst[id] > 0)
+		{
+			{for (a = 0;a < Vy2monst[id];a++)
+			{
+
+				if (ym[id] > y + 10) { Vy2monst[id] = 0; Vy1monst[id] = 0;ayfly[id] = 0;ym[id] = ym[id] - 1;break; }
+				ym[id]++;
+			}
+			}
+
+		}
+		if (Vy2monst[id] < 0)
+		{
+			{for (a = 0;a + Vy2monst[id];a++)
+			{
+				if (ym[id] < y - 20) { Vy2monst[id] = 0;Vy1monst[id] = 0;ayfly[id] = 0;ym[id] = ym[id] + 1;break; }
+
+				ym[id]--;
+			}
+			}
+
+		}
+
+
+
+
+
+
+
+		y1 = ym[id];
+		if (hurteen[id] != i[id])//伤害动画
+		{
+			hurteen[id] = i[id];
+			延迟(300);//怪物受伤时的钝刀感
+		}
+		if (i[id] > 1)
+		{//生命等于0时
+			if (i[id] < 10000) {
+				if (dx[1][y1][xm[id]] == 0)dx[1][y1][xm[id]] = 0;
+				if (dx[1][y1][xm[id] + 1] == 0)dx[1][y1][xm[id] + 1] = id;
+				if (dx[1][y1][xm[id] + 2] == 0)dx[1][y1][xm[id] + 2] = id;
+				if (dx[1][y1][xm[id] - 1] == 0)dx[1][y1][xm[id] - 1] = id;
+				y1--;
+				if (dx[1][y1][xm[id] + 3] == 0)dx[1][y1][xm[id] + 3] = id;
+				if (dx[1][y1][xm[id] - 2] == 0)dx[1][y1][xm[id] - 2] = id;
+				y1--;
+				if (dx[1][y1][xm[id]] == 0)dx[1][y1][xm[id]] = id;//三层
+				if (dx[1][y1][xm[id] + 1] == 0)dx[1][y1][xm[id] + 1] = id;
+				if (dx[1][y1][xm[id] + 2] == 0)dx[1][y1][xm[id] + 2] = id;
+				if (dx[1][y1][xm[id] + 3] == 0)dx[1][y1][xm[id] + 3] = id;
+				if (dx[1][y1][xm[id] + 4] == 0)dx[1][y1][xm[id] + 4] = id;
+				if (dx[1][y1][xm[id] + 5] == 0)dx[1][y1][xm[id] + 5] = id;
+				if (dx[1][y1][xm[id] + 6] == 0)dx[1][y1][xm[id] + 6] = id;
+				if (dx[1][y1][xm[id] + 7] == 0)dx[1][y1][xm[id] + 7] = id;
+				if (dx[1][y1][xm[id] + 8] == 0)dx[1][y1][xm[id] + 8] = id;
+				if (dx[1][y1][xm[id] + 9] == 0)dx[1][y1][xm[id] + 9] = id;
+				if (dx[1][y1][xm[id] - 1] == 0)dx[1][y1][xm[id] - 1] = id;
+				if (dx[1][y1][xm[id] - 2] == 0)dx[1][y1][xm[id] - 2] = id;
+				if (dx[1][y1][xm[id] - 3] == 0)dx[1][y1][xm[id] - 3] = id;
+				if (dx[1][y1][xm[id] - 4] == 0)dx[1][y1][xm[id] - 4] = id;
+				if (dx[1][y1][xm[id] - 5] == 0)dx[1][y1][xm[id] - 5] = id;
+				if (dx[1][y1][xm[id] - 6] == 0)dx[1][y1][xm[id] - 6] = id;
+				if (dx[1][y1][xm[id] - 7] == 0)dx[1][y1][xm[id] - 7] = id;
+				if (dx[1][y1][xm[id] - 8] == 0)dx[1][y1][xm[id] - 8] = id;
+				y1--;
+				if (dx[1][y1][xm[id]] == 0)dx[1][y1][xm[id]] = id;//四层
+				if (dx[1][y1][xm[id] + 1] == 0)dx[1][y1][xm[id] + 1] = id;
+				if (dx[1][y1][xm[id] - 8] == 0)dx[1][y1][xm[id] - 8] = id;
+				if (dx[1][y1][xm[id] + 9] == 0)dx[1][y1][xm[id] + 9] = id;
+				y1--;
+				if (dx[1][y1][xm[id]] == 0)dx[1][y1][xm[id]] = id;//五层
+				if (dx[1][y1][xm[id] + 1] == 0)dx[1][y1][xm[id] + 1] = id;
+				if (dx[1][y1][xm[id] - 1] == 0)dx[1][y1][xm[id] - 1] = id;
+				if (dx[1][y1][xm[id] - 2] == 0)dx[1][y1][xm[id] - 2] = id;
+				if (dx[1][y1][xm[id] - 3] == 0)dx[1][y1][xm[id] - 3] = id;
+				if (dx[1][y1][xm[id] + 2] == 0)dx[1][y1][xm[id] + 2] = id;
+				if (dx[1][y1][xm[id] + 3] == 0)dx[1][y1][xm[id] + 3] = id;
+				if (dx[1][y1][xm[id] + 4] == 0)dx[1][y1][xm[id] + 4] = id;
+				if (dx[1][y1][xm[id] - 8] == 0)dx[1][y1][xm[id] - 8] = id;
+				if (dx[1][y1][xm[id] + 9] == 0)dx[1][y1][xm[id] + 9] = id;
+				y1--;
+				if (dx[1][y1][xm[id]] == 0)dx[1][y1][xm[id]] = id;
+				if (dx[1][y1][xm[id] + 1] == 0)dx[1][y1][xm[id] + 1] = id;//六层
+				if (dx[1][y1][xm[id] - 1] == 0)dx[1][y1][xm[id] - 1] = id;
+				if (dx[1][y1][xm[id] - 2] == 0)dx[1][y1][xm[id] - 2] = id;
+				if (dx[1][y1][xm[id] - 4] == 0)dx[1][y1][xm[id] - 4] = id;
+				if (dx[1][y1][xm[id] + 2] == 0)dx[1][y1][xm[id] + 2] = id;
+				if (dx[1][y1][xm[id] + 3] == 0)dx[1][y1][xm[id] + 3] = id;
+				if (dx[1][y1][xm[id] + 5] == 0)dx[1][y1][xm[id] + 5] = id;
+				if (dx[1][y1][xm[id] - 7] == 0)dx[1][y1][xm[id] - 7] = id;
+				if (dx[1][y1][xm[id] + 8] == 0)dx[1][y1][xm[id] + 8] = id;
+				y1--;
+				if (dx[1][y1][xm[id] - 1] == 0)dx[1][y1][xm[id] - 1] = id;
+				if (dx[1][y1][xm[id] - 2] == 0)dx[1][y1][xm[id] - 2] = id;
+				if (dx[1][y1][xm[id] + 2] == 0)dx[1][y1][xm[id] + 2] = id;
+				if (dx[1][y1][xm[id] + 3] == 0)dx[1][y1][xm[id] + 3] = id;
+				if (dx[1][y1][xm[id] - 6] == 0)dx[1][y1][xm[id] - 6] = id;
+				if (dx[1][y1][xm[id] - 5] == 0)dx[1][y1][xm[id] - 5] = id;
+				if (dx[1][y1][xm[id] + 6] == 0)dx[1][y1][xm[id] + 6] = id;
+				if (dx[1][y1][xm[id] + 7] == 0)dx[1][y1][xm[id] + 7] = id;
+				y1--;
+				if (dx[1][y1][xm[id] - 2] == 0)dx[1][y1][xm[id] - 2] = id;
+				if (dx[1][y1][xm[id] + 3] == 0)dx[1][y1][xm[id] + 3] = id;
+			}
+			else {
+				if (i[id] < 10001) { i[id]++;die[id]++; }
+			}
+		}
+		else
+		{
+
+			i[id] = 10000;
+			mop[room]++;//怪物死亡对关卡的回馈
+
+		}
+		if (fag[id][3] > 1)fag[id][3] = 0;
+	}
+}
+
+void dieman(int x2, int y2) {
+	int id = 15;
+	x2 = x2 + 30 + 30;y2 = 600 - y2;
+	dx[0][y2 - 2][x2 - 9] = id;dx[0][y2 - 2][x2 - 8] = id;dx[0][y2 - 2][x2 - 7] = id;dx[0][y2 - 2][x2 - 6] = id;dx[0][y2 - 2][x2 - 5] = id;dx[0][y2 - 2][x2 - 4] = id;
+	dx[0][y2 - 2][x2 - 3] = id;dx[0][y2 - 2][x2 - 2] = id;dx[0][y2 - 1][x2 - 17] = id;dx[0][y2 - 1][x2 - 16] = id;dx[0][y2 - 1][x2 - 15] = id;dx[0][y2 - 1][x2 - 14] = id;
+	dx[0][y2 - 1][x2 - 13] = id;dx[0][y2 - 1][x2 - 12] = id;dx[0][y2 - 1][x2 - 11] = id;dx[0][y2 - 1][x2 - 10] = id;dx[0][y2 - 1][x2 - 9] = id;dx[0][y2 - 1][x2 - 8] = id;
+	dx[0][y2 - 1][x2 - 7] = id;dx[0][y2 - 1][x2 - 6] = id;dx[0][y2 - 1][x2 - 5] = id;dx[0][y2 - 1][x2 - 4] = id;dx[0][y2 - 1][x2 - 3] = id;dx[0][y2 - 1][x2 - 2] = id;
+	dx[0][y2 - 1][x2 + 1] = id;dx[0][y2 - 1][x2 + 2] = id;dx[0][y2 - 1][x2 + 3] = id;dx[0][y2 - 1][x2 + 4] = id;dx[0][y2 - 1][x2 + 5] = id;dx[0][y2 + 0][x2 - 11] = id;
+	dx[0][y2 + 0][x2 - 10] = id;dx[0][y2 + 0][x2 - 9] = id;dx[0][y2 + 0][x2 - 8] = id;dx[0][y2 + 0][x2 - 7] = id;dx[0][y2 + 0][x2 - 6] = id;dx[0][y2 + 0][x2 - 5] = id;
+	dx[0][y2 + 0][x2 - 4] = id;dx[0][y2 + 0][x2 - 3] = id;dx[0][y2 + 0][x2 - 2] = id;dx[0][y2 + 0][x2 - 1] = id;dx[0][y2 + 0][x2 + 0] = id;dx[0][y2 + 0][x2 + 1] = id;
+	dx[0][y2 + 0][x2 + 2] = id;dx[0][y2 + 0][x2 + 3] = id;dx[0][y2 + 0][x2 + 4] = id;dx[0][y2 + 0][x2 + 5] = id;dx[0][y2 + 1][x2 - 17] = id;dx[0][y2 + 1][x2 - 16] = id;
+	dx[0][y2 + 1][x2 - 15] = id;dx[0][y2 + 1][x2 - 14] = id;dx[0][y2 + 1][x2 - 13] = id;dx[0][y2 + 1][x2 - 12] = id;dx[0][y2 + 1][x2 - 11] = id;dx[0][y2 + 1][x2 - 10] = id;
+	dx[0][y2 + 1][x2 - 9] = id;dx[0][y2 + 1][x2 - 8] = id;dx[0][y2 + 1][x2 - 7] = id;dx[0][y2 + 1][x2 - 6] = id;dx[0][y2 + 1][x2 - 5] = id;dx[0][y2 + 1][x2 - 4] = id;
+	dx[0][y2 + 1][x2 - 3] = id;dx[0][y2 + 1][x2 - 2] = id;dx[0][y2 + 1][x2 + 1] = id;dx[0][y2 + 1][x2 + 2] = id;dx[0][y2 + 1][x2 + 3] = id;dx[0][y2 + 1][x2 + 4] = id;
+	dx[0][y2 + 1][x2 + 5] = id;dx[0][y2 + 2][x2 - 8] = id;dx[0][y2 + 2][x2 - 7] = id;dx[0][y2 + 2][x2 - 6] = id;dx[0][y2 + 2][x2 - 5] = id;dx[0][y2 + 2][x2 - 4] = id;
+	dx[0][y2 + 2][x2 - 3] = id;dx[0][y2 + 2][x2 - 2] = id;
+
+}
+
+void model()
+{
+
+#define 最大刷怪数 15
+
+
+	
+	switch (act1)
+	{
+	case 0:
+		//主角模型骨架
+		for (int a = 0;a < 9;a++)
+			for (int b = 0;b < 7;b++)
+			{
+				if (monst1[a][b] == 2)
+				{
+					dx[1][y + a][x + b - 3] = 1;
+				}
+			}
+
+		for (int a = 0;a < 9;a++)
+			for (int b = 0;b < 7;b++)
+			{
+				if (monst1[a][b] == 2)
+				{
+					dx[1][y + a][x + b - 3] = 1;
+				}
+			}
+		
+		
+		break;
+	case 1:
+		//主角模型骨架
+		for (int a = 0;a < 9;a++)
+			for (int b = 0;b < 7;b++)
+			{
+				if (monst1[a][b] == 2)
+				{
+					dx[1][y + a][x + b - 3] = 1;
+				}
+			}
+		for (int a = 0;a < 9;a++)
+			for (int b = 0;b < 7;b++)
+			{
+				if (monst1[a][b] == 2)
+				{
+					dx[1][y + a][x + b - 3] = 1;
+				}
+			}
+		
+		break;
+	case 3:
+		//主角模型骨架
+		for (int a = 0;a < 9;a++)
+			for (int b = 0;b < 7;b++)
+			{
+				if (monst1[a][b] == 2)
+				{
+					dx[1][y + a][x + b - 3] = 1;
+				}
+			}
+		dx[1][y + 2][x + 3] = 1;break;
+	case 4:
+		//主角模型骨架
+		for (int a = 0;a < 9;a++)
+			for (int b = 0;b < 7;b++)
+			{
+				if (monst1[a][b] == 2)
+				{
+					dx[1][y + a][x + b - 3] = 1;
+				}
+			}
+		dx[1][y + 2][x - 3] = 1;break;
+
+	case 8:
+		if (con > 0)
+			for (int a = 0;a < useblade1for[0];a++)
+				for (int b = 0;b < useblade1for[1];b++)
+				{
+					if (useblade1[0][a][b] == 2)
+					{
+						dx[1][y + a][x + b - 3] = 1;
+					}
+				}
+
+		else
+			for (int a = 0;a < useblade1for[0];a++)
+				for (int b = 0;b < useblade1for[1];b++)
+				{
+					if (useblade1[1][a][b] == 2)
+					{
+						dx[1][y + a][x + b - 3] = 1;
+					}
+				}
+		
+		break;
+	case 9://霸道流模型
+		if (con > 0)
+			for (int a = 0;a < useblade2for[0];a++)
+				for (int b = 0;b < useblade2for[1];b++)
+				{
+					if (useblade2[0][a][b] == 2)
+					{
+						dx[1][y + a][x + b - 3] = 1;
+					}
+				}
+
+		else
+			for (int a = 0;a < useblade2for[0];a++)
+				for (int b = 0;b < useblade2for[1];b++)
+				{
+					if (useblade2[1][a][b] == 2)
+					{
+						dx[1][y + a][x + b - 3] = 1;
+					}
+				}
+		break;
+	case 10://拔刀流模型
+		if (con > 0)
+			for (int a = 0;a < useblade3for[0];a++)
+				for (int b = 0;b < useblade3for[1];b++)
+				{
+					if (useblade3[0][a][b] == 2)
+					{
+						dx[1][y + a][x + b - 3] = 1;
+					}
+				}
+
+		else
+			for (int a = 0;a < useblade3for[0];a++)
+				for (int b = 0;b < useblade3for[1];b++)
+				{
+					if (useblade3[1][a][b] == 2)
+					{
+						dx[1][y + a][x + b - 3] = 1;
+					}
+				}
+		break;
+	case 11:
+		if (con > 0)
+			for (int a = 0;a < useblade4for[0];a++)
+				for (int b = 0;b < useblade4for[1];b++)
+				{
+					if (useblade4[0][a][b] == 2)
+					{
+						dx[1][y + a][x + b - 3] = 1;
+					}
+				}
+
+		else
+			for (int a = 0;a < useblade4for[0];a++)
+				for (int b = 0;b < useblade4for[1];b++)
+				{
+					if (useblade4[1][a][b] == 2)
+					{
+						dx[1][y + a][x + b - 3] = 1;
+					}
+				}
+		break;
+	case 12:if (con > 0)
+		for (int a = 0;a < useblade5for[0];a++)
+			for (int b = 0;b < useblade5for[1];b++)
+			{
+				if (useblade5[0][a][b] == 2)
+				{
+					dx[1][y + a][x + b - 3] = 1;
+				}
+			}
+
+			else
+		for (int a = 0;a < useblade5for[0];a++)
+			for (int b = 0;b < useblade5for[1];b++)
+			{
+				if (useblade5[1][a][b] == 2)
+				{
+					dx[1][y + a][x + b - 3] = 1;
+				}
+			}break;
+	case 13:
+		if(con>0)
+		for (int a = 0;a < useblade6for[0];a++)
+			for (int b = 0;b < useblade6for[1];b++)
+			{
+				if (useblade6[0][a][b] == 2)
+				{
+					dx[1][y + a][x + b - 3] = 1;
+				}
+			}
+
+			else
+			for (int a = 0;a < useblade6for[0];a++)
+				for (int b = 0;b < useblade6for[1];b++)
+				{
+					if (useblade6[1][a][b] == 2)
+					{
+						dx[1][y + a][x + b - 3] = 1;
+					}
+				}
+		break;
+	
+	case 14:break;
+	case 15:break;
+	case 16:break;
+
+	default:break;
+
+	}
+	if (act3 > 0 &&  act3 < 15)
+		if (con > 0)
+		{
+			if (dx[1][y + 4][x + 3] == 1)dx[1][y + 4][x + 3] = 0;
+			for (int a = 0;a < 5;a++)
+				dx[2][y + a][x + 4] = 1;
+
+
+		}
+		else
+		{
+			if (dx[1][y + 4][x - 3] == 1)dx[1][y + 4][x - 3] = 0;
+			for (int a = 0;a < 5;a++)
+				dx[2][y + a][x - 4] = 1;
+		}
+	//这部分和模型无关，是用剑函数的部分
+	switch (act3)
+	{
+	
+	case 150:
+	
+		if (con > 0) 
+		{
+			if(dx[1][y + 4][x + 3] == 1)dx[1][y + 4][x + 3] = 0;
+			for (int a = 0;a < bladewavefor[0];a++)
+				for (int b = 0;b < bladewavefor[1];b++)
+				{
+					if (bladewave[0][a][b] == 2)
+					{
+						dx[2][y + a + 1][x + b + 2] = 1;
+					}
+				}
+
+		}
+		else
+		{
+			if (dx[1][y + 4][x - 3] == 1)dx[1][y + 4][x - 3] = 0;
+
+			for (int a = 0;a < bladewavefor[0];a++)
+				for (int b = 0;b < bladewavefor[1];b++)
+				{
+					if (bladewave[1][a][b] == 2)
+					{
+						dx[2][y + a + 1][x + b - 14] = 1;
+					}
+				}
+		}
+		
+		break;
+	default:;
+		
+	}
+	if (act3 > 5 && act3 < 15);
+	if (act3 >= 15 && act3 < 20) { act1 = 8; }
+	if (act3 >= 20 && act3 < 25) { act1 = 9; }
+	if (act3 >= 25 && act3 < 30) { act1 = 9; }
+	if (act3 >= 30 && act3 < 35) { act1 = 10; }
+	if (act3 >= 35 && act3 < 40) { act1 = 11; }
+	if (act3 >= 40 && act3 < 50) { act1 = 12; }
+	//这部分和模型无关，是用剑函数的部分
+
+	
+		if (monst[1][1] > 0)//刷怪史莱姆
+			for (a = 1;a < 最大刷怪数;a++)
+			{
+				if (monst[1][a] > 0)
+				{
+					switch (actmonst[monst[1][a]])
+					{
+					case 1:
+						for (int y = 0;y < 8;y++)
+							for (int x = 0;x < 11;x++)
+							{
+								if (slap1[y][x] == 2){dx[1][ym[monst[1][a]] + y][xm[monst[1][a]] + x - 5] = monst[1][a];}
+							}
+						break;
+					
+					}
+					
+				}
+				else break;
+			}
+		if (monst[2][1] > 0)//刷怪慢百特
+			for (a = 1;a < 最大刷怪数;a++)
+			{
+				if (monst[2][a] > 0)
+				{
+					manbat(xmonst[monst[2][a]], ymonst[monst[2][a]], 5, monst[2][a], 20);
+				}
+				else break;
+			}
+
+		
+
+
+
+	}
+
+#define 最大刷怪数 15
+void product(int e)
+{
+	//e=0为怪物生成器
+	//e=1为对话标志清除
+	//e=2为对话剧情发生器
+	switch (e)
+	{
+	case 0:
+		/*关卡设计id表
+	----------------------------------------------------------------------------------------
+	|怪物                        monst[][]
+	|史莱姆                      monst[1]
+	|蝙蝠                        monst[2]
+	|旗子                        monst[3]
+	|韩德索                      monst[10][0]
+	|守卫                        monst[12]
+	|村民                        monst[11]
+	|
+	|
+	|
+	----------------------------------------------------------------------------------------
+	*/
+		if (monst[1][1] > 0)//刷怪史莱姆
+			for (a = 1;a < 最大刷怪数;a++)
+			{
+				if (monst[1][a] > 0)
+				{
+					slim(xmonst[monst[1][a]], ymonst[monst[1][a]], 10, monst[1][a], 20);
+				}
+				else break;
+			}
+		if (monst[2][1] > 0)//刷怪慢百特
+			for (a = 1;a < 最大刷怪数;a++)
+			{
+				if (monst[2][a] > 0)
+				{
+					manbat(xmonst[monst[2][a]], ymonst[monst[2][a]], 5, monst[2][a], 20);
+				}
+				else break;
+			}
+
+
+
+		//if (monst[10][0] > 0)//刷npc哈德所
+		//{
+		//	hardso(xmonst[24], ymonst[24], 50, 24, 50, 0);
+		//}
+		//if (monst[10][1] > 0)//刷怪普通巨人
+		//	for (a = 1;a < 最大刷怪数;a++)
+		//	{
+		//		if (monst[10][a] > 0)
+		//		{
+		//			hardso(xmonst[monst[11][a]], ymonst[monst[11][a]], 65, monst[11][a], 50, 0);
+		//		}
+		//		else break;
+		//	}
+		//if (monst[11][1] > 0)//刷怪村民
+		//	for (a = 1;a < 最大刷怪数;a++)
+		//	{
+		//		if (monst[11][a] > 0)
+		//		{
+		//			villager(xmonst[monst[11][a]], ymonst[monst[11][a]], 30, monst[11][a], 50, 0);
+		//		}
+		//		else break;
+		//	}
+		//if (monst[12][1] > 0)//刷怪卫兵
+		//	for (a = 1;a < 最大刷怪数;a++)
+		//	{
+		//		if (monst[12][a] > 0)
+		//		{
+		//			gard(xmonst[monst[12][a]], ymonst[monst[12][a]], 30, monst[12][a], 50, 0);
+		//		}
+		//		else break;
+		//	}
+		//if (monst[13][1] > 0)
+		//	for (a = 1;a < 最大刷怪数;a++)
+		//	{
+		//		if (monst[13][a] > 0)
+		//		{
+		//			scp6789(xmonst[monst[13][a]], ymonst[monst[13][a]], 30, monst[13][a], 50, 0);
+		//		}
+		//		else break;
+		//	}
+		//if (monst[14][1] > 0)
+		//	for (a = 1;a < 最大刷怪数;a++)
+		//	{
+		//		if (monst[14][a] > 0)
+		//		{
+		//			dionmondking(xmonst[monst[14][a]], ymonst[monst[14][a]], 30, monst[14][a], 50, 0);
+		//		}
+		//		else break;
+		//	}
+
+
+		/*管卡内显示
+		----------------------------------------------------------------------------------------
+		|elc                         按钮标志
+		|trd                         商人标志
+		|mison                       剧情探测器标志
+		|cgrah                       过场动画标志
+		|守卫                        monst[12]
+		|村民                        monst[11]
+		|
+		|
+		|
+		----------------------------------------------------------------------------------------
+		*/
+		//	if (elc > 0) {
+		//		elc = 1;pad(xbotton, ybotton, xauto, ydauto, xboxz, yboxz, eid);
+		//	}
+
+
+		//	break;
+
+		//case 1:
+		//	/*关卡外重置*/
+		//	if (elc != 2)elc = 0;//检测本关是否需要pad
+		//	if (trd != 2)trd = 0;//检测是否有商人
+		//	if (mison != 2)mison = 0;
+		//	break;
+		//case 2:
+
+		//	if (trd > 0)
+		//	{
+		//		trd = 1; trader(xtrd, ytrd, 0);
+		//	}
+
+		//	if (mison > 0)
+		//	{
+		//		mison = 1;
+
+		//		missionsector(missx, missy, missid, 0);
+		//	}
+		//	if (cgrah > 0)
+		//	{
+		//		computergraphics(cgrah);
+		//	}
+		//	break;
+
+		//case 3:
+		//	if (visual[3][1] > 0)//刷动态旗子
+		//		for (a = 1;a < 最大刷怪数;a++)
+		//		{
+		//			if (visual[3][a] > 0)
+		//			{
+		//				Flag(visualx[3][a], visualy[3][a], a, visual[3][a]);
+		//			}
+		//			else break;
+		//		}
+		//	if (visual[4][1] > 0)//刷动态房屋
+		//		for (a = 1;a < 最大刷怪数;a++)
+		//		{
+
+		//			if (visual[4][a] > 0)
+		//			{
+		//				thedoor(visualx[4][a], visualy[4][a]);
+		//			}
+		//			else break;
+		//		}
+
+		//	if (visual[5][1] > 0)//刷动态井水曲柄
+		//		for (a = 1;a < 最大刷怪数;a++)
+		//		{
+
+		//			if (visual[5][a] > 0)
+		//			{
+		//				stick(visualx[5][a], visualy[5][a], &visualstep[5][a]);
+		//			}
+		//			else break;
+		//		}
+
+		//	break;
+
+		//}
+
+	}
+}
+
+int playproccor(int x, int y,int s,char e)//e为是否显示特效
+{
+	for (int b = 0;b < 7;b++)
+		for (int a = 1;a < 8;a++)
+		{
+			int bu = 0;
+			if (dx[0][y + b][x + a] > 3)bu = 1;
+			if (dx[0][y + b][x - a] > 3)bu = -1;
+					if(bu!=0)
+				switch (dx[0][y + b][x + (a*bu)])
+				{
+				case 4://箱子
+					if (s) 
+					{
+						
+					}
+					else
+					{
+						if (e)watce("按s打开箱子", deliver, (y - en + 31) - 2, (x - ep + 120) - 5, 0);
+					}
+					return 0;
+				case 5://左门
+					if (s)
+					{
+						comp = room; room++;memory[0] = heart1;memory[1] = heart2;memory[2] = m1;memory[3] = comp; memory[4] = y;firepot = 1;
+					}
+					else
+					{
+						if (e)watce("按s通过门", deliver, (y - en + 31) - 2, (x - ep + 120) - 4, 0);
+					}
+					return 0;
+				case 6://右门
+					if (s)
+					{
+						comp = room; room--;memory[0] = heart1;memory[1] = heart2;memory[2] = m1;memory[3] = comp;memory[4] = y;firepot = 1;
+					}
+					else
+					{
+						if (e)watce("按s通过门", deliver, (y - en + 31) - 2, (x - ep + 120) - 4, 0);
+					}
+					return 0;
+
+
+				default:;
+				}
+
+
+			
+				
+		}
+	return 0;
+}
+
+/*关卡设计id表
+----------------------------------------------------------------------------------------
+|id                  怪物                        monst[][]顺序
+|1                   玩家/箱子
+|2                   矩形平台/按钮
+|3                   实体墙/活动门
+|4                   宝箱
+|5                   右门
+|6                   左门
+|7                   前门
+|8                   后门
+|10                  电脑
+|15                  装饰背景
+|19                  商人
+|21                  史莱姆                      monst[1]
+|22                  史莱姆                      monst[1]
+|23                  蝙蝠                        monst[2]
+|24                  韩德索                      monst[10][0]
+|25                  韩德索武器
+|26                  史莱姆                      monst[1]
+|27                  史莱姆                      monst[1]
+|28                  史莱姆                      monst[1]
+|29                  守卫                        monst[12]
+|30                  守卫                        monst[12]
+|31                  守卫                        monst[12]
+|32                  守卫                        monst[12]
+|33                  钻石国王                    monst[13]
+|40                  警笛人                      monst[13]
+|9000                村民                        monst[11]
+|9001                村民                        monst[11]
+|
+|
+|
+----------------------------------------------------------------------------------------
+*/
+
+void 关卡设计
+{
+	switch (room) {
+		/*关卡设计规则
+	----------------------------------------------------------------------------------------
+	|room      房间id
+	|eexit     从房间中进出                                      规则变换坐标
+	|juxing   (横坐标x,长度，纵坐标y，高度)						 产生一个可以横向透过的平台
+	|wall     (横坐标x,长度，纵坐标y，高度)						 产生一个无法穿过的区域
+	|BOX      (横坐标x,纵坐标y,0)								 产生一个带奖励的盒子
+	|doorr    (横坐标x, 纵坐标y)								 向右走的门
+	|doorl    (横坐标x, 纵坐标y)								 向左走的门
+	|doorf    (横坐标x, 纵坐标y)								 进来的门
+	|doorb    (横坐标x, 纵坐标y)								 出去的门
+	|xtrd =    商人横坐标                                        商人
+	|ytrd =    商人纵坐标                                        商人
+	|monst     [种类][第几个]                                    第几个什么怪物的id
+	|xmonst    [id]                                              怪物横坐标x
+	|ymonst    [id]                                              怪物横坐标x
+	|trd=2     初始化一般为2                                     本关有商人的标志
+	|elc=2     初始化一般为2									 本关有机关的标志
+	|xbotton = 按钮横坐标										 机关的参数
+	|ybotton = 按钮纵坐标 										 机关的参数
+	|xauto =   自动门横坐标										 机关的参数
+	|ydauto =  自动门纵坐标 									 机关的参数
+	|xboxz =   重力物块位置 									 机关的参数
+	|yboxz =   重力物块的位置									 机关的参数
+	|eid = 	   重力物块的id									     机关的参数
+	|userpc   (横坐标x, 纵坐标y)                                 玩家电脑
+	|bookrack (横坐标x, 纵坐标y)                                 书架
+	|house    (横坐标x, 纵坐标y)                                 村民小屋
+	|tree     (横坐标x, 纵坐标y)                                （类似蘑菇云的）树
+	|tip       门打开的条件，杀死怪物可达成                      门目前是否打开
+	----------------------------------------------------------------------------------------
+	*/
+
+	case 15000://实验房子
+		{
+		
+	}break;
+	case 0:
+		{
+		//需要转换时
+			
+		
+			juxing(0, 220, 0, 1);//地板
+			juxing(19, 20, 12, 1);
+			wall(45, 220 - 45, 13, 1);
+			juxing(29, 5, 6, 1);
+			wall(0, 2, 40, 40);
+			wall(149, 2, 40, 40);
+			BOX(138, 5, 0);
+			//如果门在最左边一般为147
+			tip = 2;//完成条件，杀怪数或者触发机关
+			mondt(1, 1, 21, 80, 25);
+		
+			eexit(0,doorr(147, 14),0,0);
+
+
+			tian = 'b';//时间
+			h = 1;//箱子中的物品id
+			u = 1;//给的物品数量
+
+			if (jj1 == 0 && j3[1] == 0)//此房间有剧本
+			{
+				j3[1]++;//已经触发标识
+				j2 = 0;
+				j4 = 6;//对话文本数
+			}
+	}break;
+
+	case 1:
+		{
+
+			juxing(0, 220, 0, 1);//地板
+			juxing(80, 5, 6, 1);
+			wall(0, 2, 40, 40);
+			wall(149, 2, 40, 40);
+			juxing(0, 100, 13, 1);
+
+
+
+			wall(50, 1, 12, 12);
+			tip = 0;
+			
+			BOX(40, 1, 0);
+			eexit(doorl(3, 14), doorr(147, 1), doorf(10, 1),0);
+
+
+		}break;
+
+	case 2:
+		{
+
+
+
+			wall(0, 2, 40, 40);
+			wall(500, 2, 40, 40);
+			juxing(0, 3000, 0, 1);
+
+
+			tip = 0;
+			trd = 2;//出现商人
+			xtrd = 50;ytrd = 9;
+			if (jj1 == 0 && j3[2] == 0)//此房间有剧本
+			{
+				j3[2]++;//已经触发标识
+				j2 = 6;
+				j4 = 7;//对话文本数
+			}
+			eexit(doorl(3, 1),0, doorf(75, 1),0);
+		}break;
+	
+	default:;
+		}
+
+
+	if (tian == 'w')//场景光照 
+	{
+		ch1 = day[0];
+		ch2 = day[1];
+		system("color 70");
+	}
+	else
+	{
+		ch1 = night[0];
+		ch2 = night[1];
+		system("color 07");
+	}
+	//product(1);
+}
+
+
+DWORD WINAPI fakegpu(LPVOID lpParam)
+
+
+
+{
+	FILE *fp;
+	
+	HANDLE hOutput;
+	COORD coord = { 0,0 };
+	hOutput = GetStdHandle(STD_OUTPUT_HANDLE);
+	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	int ic = 0, px[4] = { 0 }, py[4] = { 0 }, delx = 0, dely = 0, startx, starty, color;
+	int zero[10] = { 0 };
+	char  mousetouch=0, mode = 0, numdel = 0;
+	int sx[1000][2] = { 0 }, sy[1000][2] = {0};
+	
+	int xc, yc, xq, yq,  c, movex, movey, x4, y4, tablestep = 0, swin = 0, tablex = 30, tabley = 0, nx[3], ny[3];
+	while (true)
+	{
+		if (desert)
+		{
+
+			//printf("%d",a++);
+			desert = 0;
+			Sleep(5);
+
+			//编译层（应该放在fakegpu线程内）
+			switch (shootgun)
+			{
+			case 0: {watcb((char*)&show, creater, ep, en, ch1, ch2, (char*)&showb);}break;
+			case 1: {watcb((char*)&show[0][0], creater, xcar + 60, ycar + 16, ch1, ch2, (char*)&showb);}break;
+			}
+			//显示层（应该放在fakegpu线程内）
+
+			//图像显示函数
+			switch (shootgun)//准星调出视角
+			{
+			case 0:
+			{
+				if (con > 0)
+				{
+					xcar = x + 10;//保留cg视角
+					ycar = y - 2;//保留cg视角
+				}
+				else
+				{
+					xcar = x - 10;//保留cg视角
+					ycar = y - 2;//保留cg视角
+				}break;
+			}
+			case 1:
+			{
+
+				/************
+					*   准星    *
+					*************/
+				showb[16][60] = '+';
+				showb[15][60] = '+';
+				showb[17][60] = '+';
+				showb[16][62] = '+';
+				showb[16][58] = '+';
+			}break;
+			}
+			if (desert == 0)
+			{
+				coord.X = 0;
+				coord.Y = 0;
+				SetConsoleCursorPosition(hOutput, coord);//局部覆盖更新代码
+				printf("\t\t\t\t###########################################################################################################################\n");
+				for (a = 0;a < 32;a++) { p = show[a];printf(" %s#%s#\n", showtmir[a], p); }
+				printf("\t\t\t\t###########################################################################################################################\n");
+				printf("%f %f ",ax[21],V1monst[21]);
+				//printf(" %d ",zero[2]);
+			}
+		}
+		开发者调试
+		{
+			GetCursorPos(&ptd);//获取鼠标坐标
+
+
+
+
+		if (picmeun == 0)
+		{
+			switch (kdraw)
+			{
+			case 0:showb[10][10] = 35;break;//点1
+			case 1:showb[10][90] = 35;break;//点2
+			case 2:showb[30][10] = 35;break;//点3
+			case 3:showb[30][90] = 35;break;//点4
+			}
+			if (GetKeyState(2) < 0) { ic = 2; }
+			else
+			{
+				if (ic == 2 && kdraw < 4)
+				{
+					ic = 0;
+					px[kdraw] = ptd.x;
+					py[kdraw] = ptd.y;
+					kdraw++;
+				}
+				if (kdraw > 3)
+				{
+					/*delx=(int)(px[0]+px[1]+px[2]+px[3] - 10 - 90 - 10 - 90)/4;
+					dely = (int)(py[0] + py[1] + py[2] + py[3] - 20 - 60) / 4;*/
+
+					for (a = 1;a < 4;a++)
+					{
+						if (px[0] - px[a]<10 && px[0] - px[a] > -10)
+						{
+							if (py[0] > py[a])
+							{
+								dely = py[0] - py[a];
+							}
+							else
+							{
+								dely = py[a] - py[0];
+							}
+
+
+						}
+						if (py[0] - py[a]<10 && py[0] - py[a] > -10)
+						{
+							if (px[0] > px[a])
+							{
+								delx = px[0] - px[a];
+							}
+							else
+							{
+								delx = px[a] - px[0];
+							}
+
+
+						}
+					}
+					xstep = (float)delx / (float)80;
+					ystep = (float)dely / (float)20;
+
+
+					movex = (px[0] + px[2] - 20 * xstep) / (xstep * 2);
+					movey = (py[0] + py[1] - 20 * ystep) / (ystep * 2);
+
+
+
+					picmeun++;
+
+				}
+			}
+
+
+
+		}
+		if (picmeun == 1)
+		{
+
+			xq = ptd.x / xstep - movex;
+			yq = ptd.y / ystep - movey;
+			if (xq > 120)xq = 120;
+			if (yq > 40)yq = 40;
+			if (xq < 1)xq = 1;
+			if (yq < 1)yq = 1;
+			showb[yq][xq] = '#';
+			if (GetKeyState(68) < 0) { editmode = 1; }//d
+			if (GetKeyState(77) < 0) { editmode = 2;t = 2; }//m
+
+
+			if (editmode == 1)
+			if (GetKeyState(2) < 0) { ic = 2; }
+			else { if (ic == 2) { picmeun = 2;ic = 0;startx = xq + ep - 120;starty = yq + en - 31;picmeun++;picture[yq + en - 31][xq + ep - 120] = 42; } }//模型定位初始化
+
+			if (editmode == 2)
+			{
+				picmeun = 2;
+			}
+
+		}
+		if (picmeun == 2)
+		{
+		backacce:
+				for (b = en - 31;en >= b;b++)
+					for (a = ep - 120;ep >= a;a++)
+						switch (picture[b][a])
+						{
+						case 35:showb[b - en + 31][a - ep + 120] = '#';break;
+						case 42:showb[b - en + 31][a - ep + 120] = '*';break;
+						case 30:showb[b - en + 31][a - ep + 120] = 't';dx[0][b][a] = 2;break;
+						default: continue;//防止被画
+						}
+
+				xq = ptd.x / xstep - movex;
+				yq = ptd.y / ystep - movey;
+				if (xq > 120)xq = 120;
+				if (yq > 40)yq = 40;
+				if (xq < 1)xq = 1;
+				if (yq < 1)yq = 1;
+				showb[yq][xq] = '#';
+
+				if (editmode == 1)
+				{
+					if (GetKeyState(2) < 0)
+					{
+						ic = 2;
+						//临时存放区
+
+						switch (t)
+						{
+						case 0:picture[yq + en - 31][xq + ep - 120] = 42;break;
+						case 1:picture[yq + en - 31][xq + ep - 120] = 0;break;
+						case 2: {
+							if (mousetouch < 2) { mousetouch = 2;y4 = yq;x4 = xq; }//初始点初始化
+							//直线准线数据为35
+
+							line(xq, yq, x4, y4, 35, 显示屏幕参数);
+
+						}break;
+						case 4:picture[yq + en - 31][xq + ep - 120] = 30; break;
+						case 5:
+							if (mousetouch < 3)
+							{
+								mousetouch = 3;
+
+								nx[numdel] = xq;
+								ny[numdel] = yq;
+
+								if (numdel < 3)
+									numdel++;
+
+
+
+							}
+							break;
+						}
+					}
+					else {
+
+						//[yq + en - 31][xq + ep - 120]
+
+
+
+						if (ic == 2)
+						{
+
+							ic = 0;
+
+						}
+						if (mousetouch > 0)
+						{
+
+
+							switch (mousetouch)
+							{
+
+							case 2: {
+								line(xq + ep - 120, yq + en - 31, x4 + ep - 120, y4 + en - 31, 42, 绘画底板参数);
+
+							}
+									mousetouch = 0;break;
+							case 3:
+								if (numdel > 2)
+								{
+									numdel = 0;
+
+
+
+									{mkdelta(nx[0] + ep - 120, ny[0] + en - 31, nx[1] + ep - 120, ny[1] + en - 31, nx[2] + ep - 120, ny[2] + en - 31, 42, 绘画底板参数);}
+								}
+								mousetouch = 0;break;
+							}
+						}
+					}
+
+					if (GetKeyState(18) < 0) 
+					{
+						//如果左alt键被按下
+						if (GetKeyState(87) < 0) {
+							t = 0;
+						}//w
+						if (GetKeyState(69) < 0) {
+							t = 1;
+						}//e
+						if (GetKeyState(82) < 0) {
+							t = 0;picmeun = 1;
+							for (a = 0;a < 1000;a++)
+								for (b = 0;b < 5000;b++)picture[b][a] = 0;
+						}//r
+						if (GetKeyState(76) < 0) {
+							t = 2;
+						}//l
+
+						if (GetKeyState(77) < 0) {
+							t = 3;
+						}//m
+						if (GetKeyState(84) < 0) {
+							t = 4;
+						}//t键 搭建临时站立平台
+						if (GetKeyState(68) < 0) {
+							t = 5;
+						}//d键 绘制三角形
+					}
+					if (GetKeyState(13) < 0) 
+					{
+						t = 0;picmeun = 3;
+
+					}//r
+
+
+				}
+			
+				
+				
+				
+				
+				
+				if (editmode == 2)
+				{
+					if (GetKeyState(2) < 0)
+					{
+						ic = 2;
+						switch (t)
+						{
+						case 0:picture[yq + en - 31][xq + ep - 120] = 42;break;
+						case 1:picture[yq + en - 31][xq + ep - 120] = 0;break;
+						case 2: {
+							if (mousetouch < 2) { mousetouch = 2;y4 = yq;x4 = xq; }//初始点初始化
+							//直线准线数据为35
+
+							line(xq, yq, x4, y4, 35, 显示屏幕参数);
+
+						}break;
+						default:;
+						}
+					}
+					else
+					{
+						if (ic == 2)
+						{
+
+							ic = 0;
+
+						}
+						if (mousetouch > 0)
+						{
+
+
+							switch (mousetouch)
+							{
+
+							case 2:
+							{
+								line(xq + ep - 120, yq + en - 31, x4 + ep - 120, y4 + en - 31, 42, 绘画底板参数);
+
+
+
+
+								sx[zero[t]][0] = xq + ep - 120;
+								sx[zero[t]][1] = x4 + ep - 120;
+								sy[zero[t]][0] = yq + en - 31;
+								sy[zero[t]][1] = y4 + en - 31;
+
+								zero[t] += 1;
+
+
+							}
+							mousetouch = 0;break;
+							case 3:
+
+								mousetouch = 0;break;
+							}
+
+						}
+
+					}
+					if (GetKeyState(18) < 0)
+					{
+						//如果左alt键被按下
+						if (GetKeyState(87) < 0) {
+							t = 0;
+						}//w
+						if (GetKeyState(69) < 0) {
+							t = 1;
+						}//e
+						if (GetKeyState(82) < 0) {
+							t = 0;picmeun = 1;
+							for (a = 0;a < 1000;a++)
+								for (b = 0;b < 5000;b++)picture[b][a] = 0;
+						}//r
+						if (GetKeyState(50) < 0)
+						{
+							t = 2;
+						}//l
+
+
+						if (GetKeyState(77) < 0) {
+							t = 3;
+						}//m
+
+						if (GetKeyState(84) < 0) {
+							t = 4;
+						}//t键 搭建临时站立平台
+						if (GetKeyState(68) < 0) {
+							t = 5;
+						}//d键 绘制三角形
+					}
+					if (GetKeyState(13) < 0)
+					{
+						t = 0;picmeun = 3;
+					}//r
+					static char leave = 0;
+					if (GetKeyState(90) < 0)
+					{
+						leave = 1;
+				    }
+					else
+					{
+						if (leave) {
+							leave = 0;
+							if (zero[t] != 0)zero[t] -= 1;
+
+							Sleep(500);line(sx[zero[t]][0], sy[zero[t]][0], sx[zero[t]][1], sy[zero[t]][1], 0, 绘画底板参数);
+
+
+							sx[zero[t]][0] = 0;
+							sx[zero[t]][1] = 0;
+							sy[zero[t]][0] = 0;
+							sy[zero[t]][1] = 0;
+
+						}
+					}//Z
+
+
+
+				}
+			
+			
+
+
+
+
+
+		}
+		if (picmeun == 3)
+		  {
+
+			  if (picmeun == 3)
+			  {
+				  char word[100] = { 0 };
+				  KBclear();
+				  system("cls");
+				  printf("确定要生成文件吗？");
+				  system("pause");
+				  printf("请输入文件名");
+				  scanf_s("%10s", word);
+				  int mount = 0;
+				  while (word[mount] != '\0')
+				  {
+					  mount++;
+				  }
+				  word[mount] = '.';
+				  word[mount + 1] = 't';
+				  word[mount + 2] = 'x';
+				  word[mount + 3] = 't';
+				  word[mount + 4] = '\0';
+				  SetConsoleCursorPosition(hOutput, coord);
+				  int i = 0;
+				  if (fopen_s(&fp, word, "r+")) {
+					  puts("已经新建模型存放文件");
+					  fopen_s(&fp, word, "w+");
+				  }
+				  for (b = 0;b < 1000;b++)
+					  for (a = 0;a < 5000;a++)
+					  {
+						  if (picture[b][a] == 42)
+						  {
+							  i++;
+							  xc = a - startx;
+							  yc = b - starty;
+							  if (yc >= 0)
+								  fprintf(fp, "dx[0][y2+%d]", yc);
+							  else
+								  fprintf(fp, "dx[0][y2%d]", yc);
+							  if (xc >= 0)
+								  fprintf(fp, "[x2+%d]", xc);
+							  else
+								  fprintf(fp, "[x2%d]", xc);
+							  fprintf(fp, "=id;");
+							  if (i == 9) { fprintf(fp, "\n"); i = 0; }
+						  }
+					  }
+				  fclose(fp);
+				  printf("已建立模型存放文件%s\n按m输出镜像代码", word);
+				  while (1) {
+					  if (GetKeyState(90) < 0) { picmeun = 2; goto backacce; }
+					  if (GetKeyState(77) < 0)
+					  {
+						  system("cls");
+						  break;
+						  Sleep(500);
+					  }//space
+				  }
+				  SetConsoleCursorPosition(hOutput, coord);
+				  i = 0;
+				  mount = 0;
+				  while (word[mount] != '\0')
+				  {
+					  mount++;
+				  }word[mount] = '(';
+				  word[mount + 1] = 'm';
+				  word[mount + 2] = 'i';
+				  word[mount + 3] = 'r';
+				  word[mount + 4] = ')';
+				  word[mount + 5] = '.';
+				  word[mount + 6] = 't';
+				  word[mount + 7] = 'x';
+				  word[mount + 8] = 't';
+				  word[mount + 9] = '\0';
+
+				  if (fopen_s(&fp, word, "r+")) {
+					  puts("已经新建模型存放文件");
+					  fopen_s(&fp, word, "w+");
+				  }
+				  for (b = 0;b < 1000;b++)
+					  for (a = 0;a < 5000;a++)
+					  {
+						  if (picture[b][a] == 42)
+						  {
+							  i++;
+							  xc = a - startx;
+							  yc = b - starty;
+							  if (yc >= 0)
+								  fprintf(fp, "dx[0][y2+%d]", yc);
+							  else
+								  fprintf(fp, "dx[0][y2%d]", yc);
+							  if (xc >= 0)
+								  fprintf(fp, "[x2-%d]", xc);
+							  else
+								  fprintf(fp, "[x2+%d]", -xc);
+							  fprintf(fp, "=id;");
+							  if (i == 9) { fprintf(fp, "\n"); i = 0; }
+						  }
+					  }
+				  fclose(fp);
+				  while (1) {
+					  if (GetKeyState(32) < 0)
+					  {
+						  system("cls");
+						  break;
+						  Sleep(500);
+
+					  }//space
+				  }
+				  SetConsoleCursorPosition(hOutput, coord);
+				  i = 0;
+				  for (b = 0;b < 1000;b++)
+					  for (a = 0;a < 5000;a++)
+					  {
+						  if (picture[b][a] == 42)
+						  {
+							  i++;
+							  xc = a - startx;
+							  yc = b - starty;
+							  printf("if(");
+							  if (yc >= 0)
+								  printf("dx[1][y2+%d]", yc);
+							  else
+								  printf("dx[1][y2%d]", yc);
+							  if (xc >= 0)
+								  printf("[x2+%d]", xc);
+							  else
+								  printf("[x2%d]", xc);
+							  printf("==0)");
+							  if (yc >= 0)
+								  printf("dx[1][y2+%d]", yc);
+							  else
+								  printf("dx[1][y2%d]", yc);
+							  if (xc >= 0)
+								  printf("[x2+%d]", xc);
+							  else
+								  printf("[x2%d]", xc);
+							  printf("=id;");
+							  if (i == 9) { printf("\n"); i = 0; }
+						  }
+					  }
+				  printf("已建立模型存放文件%s\n按m输出镜像代码", word);
+				  while (1) 
+				  {
+					  if (GetKeyState(90) < 0) { picmeun = 2;goto backacce; }
+					  if (GetKeyState(77) < 0)
+					  {
+						  system("cls");
+						  break;
+						  Sleep(500);
+
+					  }//space
+				  }
+				  SetConsoleCursorPosition(hOutput, coord);
+				  i = 0;
+
+				  for (b = 0;b < 1000;b++)
+					  for (a = 0;a < 5000;a++)
+					  {
+						  if (picture[b][a] == 42)
+						  {
+							  i++;
+							  xc = a - startx;
+							  yc = b - starty;
+							  printf("if(");
+							  if (yc >= 0)
+								  printf("dx[1][y2+%d]", yc);
+							  else
+								  printf("dx[1][y2%d]", yc);
+							  if (xc >= 0)
+								  printf("[x2-%d]", xc);
+							  else
+								  printf("[x2+%d]", -xc);
+							  printf("==0)");
+							  if (yc >= 0)
+								  printf("dx[1][y2+%d]", yc);
+							  else
+								  printf("dx[1][y2%d]", yc);
+							  if (xc >= 0)
+								  printf("[x2-%d]", xc);
+							  else
+								  printf("[x2+%d]", -xc);
+							  printf("=id;");
+							  if (i == 9) { printf("\n"); i = 0; }
+						  }
+					  }
+
+
+
+				  while (1)if (GetKeyState(82) < 0) 
+				  {
+					  //goto again;
+				  }//r
+			  }
+		  }
+
+		}
+
+	}
+	return 0;
+}
